@@ -1,0 +1,559 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#153b32">
+  <title>Comparativo executivo | 2025 x 2026</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      color-scheme: light;
+      --ink: #1c2924;
+      --muted: #718078;
+      --paper: #f3f4ed;
+      --surface: #fffefa;
+      --line: #e2e6dd;
+      --forest: #153b32;
+      --forest-2: #245b49;
+      --lime: #c5ed72;
+      --coral: #e8755f;
+      --gold: #d9a743;
+      --year25: #e8755f;
+      --year26: #25876b;
+      --shadow: 0 8px 28px rgba(23, 51, 40, .055);
+      font-family: "DM Sans", "Trebuchet MS", sans-serif;
+      font-synthesis: none;
+      text-rendering: optimizeLegibility;
+    }
+
+    * { box-sizing: border-box; }
+    body { margin: 0; color: var(--ink); background: var(--paper); }
+    button, select { font: inherit; }
+    .masthead {
+      color: #f7f8f1;
+      background-color: var(--forest);
+      background-image: repeating-linear-gradient(135deg, transparent 0 34px, rgba(255,255,255,.025) 34px 35px);
+      padding: 30px max(24px, calc((100vw - 1320px) / 2)) 34px;
+    }
+    .masthead-inner, main { width: min(1320px, 100%); margin: 0 auto; }
+    .eyebrow { margin: 0 0 11px; color: var(--lime); font-size: 11px; font-weight: 700; letter-spacing: 1.4px; text-transform: uppercase; }
+    .masthead-row { display: flex; align-items: end; justify-content: space-between; gap: 24px; }
+    h1 { margin: 0; font: 500 36px/1.1 "Fraunces", Georgia, serif; letter-spacing: 0; }
+    .masthead-copy { margin: 9px 0 0; color: #c6d5cc; font-size: 13px; }
+    .source-link { flex: none; color: var(--lime); font-size: 13px; font-weight: 600; text-decoration: none; border-bottom: 1px solid rgba(197,237,114,.45); padding: 0 0 5px; }
+    .source-link:hover { color: #fff; border-color: #fff; }
+    .masthead-actions { display: flex; align-items: center; gap: 18px; }
+    .refresh-button { min-height: 38px; padding: 0 12px; border: 1px solid rgba(255,255,255,.35); border-radius: 3px; color: #f7f8f1; background: transparent; cursor: pointer; font-size: 12px; font-weight: 600; }
+    .refresh-button:hover:not(:disabled) { color: var(--forest); background: var(--lime); border-color: var(--lime); }
+    .refresh-button:disabled { cursor: wait; opacity: .65; }
+
+    main { padding: 22px 24px 42px; }
+    .filters { display: flex; align-items: end; flex-wrap: wrap; gap: 14px 24px; padding: 0 0 20px; border-bottom: 1px solid #dce1d8; }
+    .filter { display: grid; gap: 6px; min-width: 170px; }
+    .filter label { color: #53645b; font-size: 10px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; }
+    .filter select { appearance: none; min-height: 40px; border: 1px solid #d6ddd4; border-radius: 3px; padding: 0 36px 0 12px; color: var(--ink); background: #fffefa; cursor: pointer; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='m1 1 5 5 5-5' fill='none' stroke='%2353645b' stroke-width='1.5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+    .filter select:focus-visible, a:focus-visible { outline: 3px solid #9ccd50; outline-offset: 2px; }
+    .period-note { align-self: center; margin: 0 0 2px auto; color: #65756c; font-size: 12px; }
+    .period-note strong { color: var(--forest); font-weight: 700; }
+
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 12px; padding: 19px 0 24px; }
+    .kpi { min-width: 0; min-height: 112px; padding: 16px 17px 14px; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); box-shadow: var(--shadow); }
+    .kpi-label { display: flex; align-items: center; gap: 8px; margin: 0 0 13px; color: #65736b; font-size: 11px; font-weight: 600; }
+    .kpi-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--year25); }
+    .kpi:nth-child(2) .kpi-dot { background: var(--year26); }
+    .kpi:nth-child(3) .kpi-dot { background: var(--gold); }
+    .kpi:nth-child(4) .kpi-dot { background: #6184a0; }
+    .kpi-value { overflow: hidden; margin: 0; font-size: clamp(19px, 2vw, 27px); font-weight: 700; letter-spacing: 0; text-overflow: ellipsis; white-space: nowrap; }
+    .kpi-foot { margin: 7px 0 0; color: #7b8881; font-size: 10px; }
+    .kpi-year-values { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    .kpi-year { display: grid; min-width: 0; gap: 3px; }
+    .kpi-year + .kpi-year { border-left: 1px solid var(--line); padding-left: 10px; }
+    .kpi-year-label { display: flex; align-items: center; gap: 5px; color: #718078; font-size: 9px; font-weight: 700; }
+    .kpi-year-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--year25); }
+    .kpi-year[data-year="2026"] .kpi-year-dot { background: var(--year26); }
+    .kpi-year-count { overflow: hidden; font-size: 20px; line-height: 1.2; text-overflow: ellipsis; white-space: nowrap; }
+    .positive { color: #227455 !important; }
+    .negative { color: #c35b47 !important; }
+
+    .chart-grid { display: grid; grid-template-columns: minmax(0, 1.9fr) minmax(300px, .9fr); gap: 14px; }
+    .panel { min-width: 0; border: 1px solid var(--line); border-radius: 4px; background: var(--surface); box-shadow: var(--shadow); }
+    .panel-head { display: flex; align-items: start; justify-content: space-between; gap: 16px; padding: 18px 19px 7px; }
+    .panel-title { margin: 0; font-size: 15px; font-weight: 700; }
+    .panel-subtitle { margin: 4px 0 0; color: #87938b; font-size: 11px; }
+    .totals { display: flex; flex-wrap: wrap; justify-content: end; gap: 7px; }
+    .total-chip { display: inline-flex; align-items: center; gap: 6px; min-height: 25px; padding: 4px 8px; border-radius: 3px; background: #f3f4ef; color: #53645b; font-size: 10px; white-space: nowrap; }
+    .total-chip strong { color: var(--ink); font-size: 10px; }
+    .legend-dot { width: 7px; height: 7px; flex: none; border-radius: 50%; background: var(--year25); }
+    .legend-dot.y26 { background: var(--year26); }
+    .legend-dot.rent { background: var(--year26); }
+    .legend-dot.sale { background: var(--coral); }
+    .legend-dot.adjustment { background: var(--gold); }
+    .chart-wrap { padding: 4px 12px 12px; }
+    .chart-svg { display: block; width: 100%; height: auto; overflow: visible; }
+    .grid-line { stroke: #e9ece6; stroke-width: 1; }
+    .axis-label { fill: #87938b; font: 10px "DM Sans", sans-serif; }
+    .month-label { fill: #53645b; font: 10px "DM Sans", sans-serif; }
+    .bar-label { fill: #37473f; font: 600 9px "DM Sans", sans-serif; }
+    .bar-label.revenue-label { font-size: 8px; }
+    .empty-state { display: grid; min-height: 250px; place-items: center; color: #829087; font-size: 13px; text-align: center; }
+
+    .mix-panel { display: flex; flex-direction: column; }
+    .mix-content { display: grid; flex: 1; align-content: center; justify-items: center; gap: 12px; padding: 6px 18px 21px; }
+    .donut { width: min(220px, 70%); overflow: visible; }
+    .donut-total { fill: var(--ink); font: 700 14px "DM Sans", sans-serif; text-anchor: middle; }
+    .donut-caption { fill: #89958d; font: 10px "DM Sans", sans-serif; text-anchor: middle; }
+    .mix-legend { display: grid; width: 100%; gap: 10px; }
+    .mix-row { display: grid; grid-template-columns: 9px 1fr auto; align-items: center; gap: 8px; font-size: 11px; }
+    .mix-row .name { color: #65736b; }
+    .mix-row strong { color: var(--ink); font-size: 11px; }
+    .mix-row small { grid-column: 2 / 4; margin-top: -7px; color: #8b968e; font-size: 10px; }
+
+    .volume-panel { margin-top: 14px; }
+    .volume-panel .chart-wrap { padding-top: 2px; }
+    .detail-panel { margin-top: 14px; overflow: hidden; }
+    .table-scroll { overflow-x: auto; padding: 0 18px 14px; }
+    table { width: 100%; min-width: 690px; border-collapse: collapse; text-align: right; font-size: 11px; }
+    th { padding: 10px 10px; border-bottom: 1px solid #e4e8e1; color: #7a887f; font-size: 9px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; white-space: nowrap; }
+    th:first-child, td:first-child { text-align: left; }
+    td { padding: 9px 10px; border-bottom: 1px solid #edf0eb; color: #4f5d55; white-space: nowrap; }
+    tbody tr:hover { background: #f6f7f2; }
+    tfoot td { border-top: 1px solid #dfe5dc; border-bottom: 0; color: var(--ink); font-weight: 700; }
+    .status-note { display: flex; align-items: center; gap: 8px; margin: 13px 0 0; color: #7d8982; font-size: 10px; }
+    .status-note::before { width: 6px; height: 6px; border-radius: 50%; background: var(--year26); content: ""; }
+    footer { display: flex; justify-content: space-between; gap: 14px; padding: 17px 0 0; color: #88938c; font-size: 10px; }
+    footer a { color: #496e5c; text-decoration: none; }
+
+    @media (max-width: 900px) {
+      .chart-grid { grid-template-columns: minmax(0, 1.5fr) minmax(270px, 1fr); }
+      .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .totals { justify-content: start; }
+      .panel-head { flex-direction: column; }
+    }
+    @media (max-width: 640px) {
+      .masthead { padding: 25px 18px 27px; }
+      .masthead-row { align-items: start; flex-direction: column; gap: 17px; }
+      .masthead-actions { flex-wrap: wrap; gap: 12px; }
+      h1 { font-size: 31px; }
+      main { padding: 17px 14px 30px; }
+      .filters { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .filter { min-width: 0; }
+      .filter:last-of-type { grid-column: 1 / -1; }
+      .period-note { grid-column: 1 / -1; margin: 0; }
+      .kpis { gap: 8px; padding: 14px 0 17px; }
+      .kpi { min-height: 102px; padding: 13px 12px; }
+      .kpi-label { min-height: 25px; margin-bottom: 9px; font-size: 10px; }
+      .kpi-value { font-size: 14px; }
+      .kpi-year-count { font-size: 16px; }
+      .kpi-foot { font-size: 9px; }
+      .chart-grid { grid-template-columns: 1fr; gap: 10px; }
+      .panel-head { padding: 15px 14px 5px; }
+      .volume-panel, .detail-panel { margin-top: 10px; }
+      .chart-wrap { padding-right: 5px; padding-left: 5px; }
+      .mix-content { padding-bottom: 17px; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: no-preference) {
+      .panel, .kpi { animation: arrive .45s both; }
+      .kpi:nth-child(2) { animation-delay: .04s; }
+      .kpi:nth-child(3) { animation-delay: .08s; }
+      .kpi:nth-child(4) { animation-delay: .12s; }
+      @keyframes arrive { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+    }
+  </style>
+</head>
+<body>
+  <header class="masthead">
+    <div class="masthead-inner">
+      <p class="eyebrow">Painel executivo · desempenho comercial</p>
+      <div class="masthead-row">
+        <div>
+          <h1>2025 <span style="color:var(--lime)">x</span> 2026</h1>
+          <p class="masthead-copy">Faturamento, locações e vendas em uma visão comparativa.</p>
+        </div>
+        <div class="masthead-actions">
+          <button class="refresh-button" id="refreshButton" type="button">Atualizar dados</button>
+          <a class="source-link" href="https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/edit?gid=1301870631#gid=1301870631" target="_blank" rel="noreferrer">Abrir planilha de origem ↗</a>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="filters" aria-label="Filtros do painel">
+      <div class="filter">
+        <label for="yearFilter">Ano</label>
+        <select id="yearFilter">
+          <option value="all">2025 x 2026</option>
+          <option value="2025">2025</option>
+          <option value="2026">2026</option>
+        </select>
+      </div>
+      <div class="filter">
+        <label for="monthFilter">Mês</label>
+        <select id="monthFilter">
+          <option value="all">Todos os meses</option>
+          <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
+          <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
+          <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
+          <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+        </select>
+      </div>
+      <div class="filter">
+        <label for="transactionFilter">Transação</label>
+        <select id="transactionFilter">
+          <option value="total">Locações + vendas</option>
+          <option value="locacao">Locação</option>
+          <option value="venda">Venda</option>
+        </select>
+      </div>
+      <p class="period-note" id="periodNote"></p>
+    </section>
+
+    <section class="kpis" aria-label="Indicadores do período">
+      <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Faturamento 2025</p><p class="kpi-value" id="kpi2025">—</p><p class="kpi-foot" id="foot2025">Ano completo</p></article>
+      <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Faturamento 2026</p><p class="kpi-value" id="kpi2026">—</p><p class="kpi-foot" id="foot2026">Dados até setembro</p></article>
+      <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Variação comparável</p><p class="kpi-value" id="kpiChange">—</p><p class="kpi-foot" id="footChange">2026 x 2025 · mesmos meses</p></article>
+      <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Totens expedidos</p><div class="kpi-year-values" id="kpiUnits" aria-label="Totens expedidos por ano"></div><p class="kpi-foot" id="footUnits">Quantidades por ano</p></article>
+    </section>
+
+    <section class="chart-grid" aria-label="Gráficos de faturamento">
+      <article class="panel">
+        <div class="panel-head">
+          <div><h2 class="panel-title">Faturamento mensal</h2><p class="panel-subtitle">Valores em R$ milhões · passe sobre uma coluna para ver o total exato</p></div>
+          <div class="totals" id="revenueTotals" aria-label="Totais por ano"></div>
+        </div>
+        <div class="chart-wrap" id="revenueChart"></div>
+      </article>
+      <article class="panel mix-panel">
+        <div class="panel-head"><div><h2 class="panel-title">Faturamento total por ano</h2><p class="panel-subtitle" id="mixSubtitle">Soma do campo Total geral · meses sem consolidação ficam fora</p></div></div>
+        <div class="mix-content" id="mixChart"></div>
+      </article>
+    </section>
+
+    <section class="panel volume-panel">
+      <div class="panel-head">
+        <div><h2 class="panel-title">Totens movimentados por mês</h2><p class="panel-subtitle">Quantidade de locações e vendas · valores totais identificados nas colunas</p></div>
+        <div class="totals" id="unitTotals" aria-label="Totais de unidades por ano"></div>
+      </div>
+      <div class="chart-wrap" id="unitChart"></div>
+    </section>
+
+    <section class="panel detail-panel">
+      <div class="panel-head"><div><h2 class="panel-title">Detalhamento mensal</h2><p class="panel-subtitle">Valores completos e variação no mesmo período</p></div></div>
+      <div class="table-scroll" id="detailTable"></div>
+    </section>
+
+    <footer>
+      <span>Fonte: Levantamento de faturamento 2025 x 2026</span>
+      <span id="dataStatus" aria-live="polite">Exibindo os dados incorporados.</span>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+  <script>
+    const MONTHS = ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun", "Jul", "Ago", "Set", "Out", "Nov", "Dez"];
+    const MONTH_KEYS = ["jan", "fev", "mar", "abr", "mai", "jun", "jul", "ago", "set", "out", "nov", "dez"];
+    const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/export?format=csv&gid=1301870631";
+    const OFFICIAL_TOTALS = {
+      2025: [3849204.49, 4402864.13, 3720505.26, 4429361.40, 3806279.25, 5826539.68, 5153491.81, 5188276.75, 8174534.79, 8589392.98, 6888445.23, 4667767.45],
+      2026: [6062336.45, 6171591.81, 5711897.20, 5807340.37, 5625403.20, 5262478.21, 6348955.95, 5750853.90, 7101555.30]
+    };
+    let DATA = [
+      [2025, 0, 2490532.60, 1358671.89, 251, 89], [2025, 1, 2848484.59, 1554379.54, 183, 107],
+      [2025, 2, 2673669.36, 1046835.90, 91, 80], [2025, 3, 3178382.71, 1250978.69, 139, 92],
+      [2025, 4, 2140959.87, 1665319.38, 148, 109], [2025, 5, 3558602.11, 2267937.57, 156, 158],
+      [2025, 6, 3560954.20, 1592537.61, 214, 97], [2025, 7, 3422693.80, 1765582.95, 237, 101],
+      [2025, 8, 3454669.14, 4719865.65, 288, 328], [2025, 9, 3076903.26, 5512489.72, 269, 409],
+      [2025, 10, 3106164.95, 3782280.28, 201, 286], [2025, 11, 3006941.04, 1660826.41, 285, 120],
+      [2026, 0, 3831369.33, 2230967.12, 178, 141], [2026, 1, 3954836.01, 2216755.80, 116, 157],
+      [2026, 2, 4196197.17, 1515700.03, 140, 120], [2026, 3, 4256942.04, 1550398.33, 118, 93],
+      [2026, 4, 4107992.65, 1517410.55, 119, 110], [2026, 5, 3991035.14, 1271443.07, 110, 82],
+      [2026, 6, 3975664.46, 2373291.49, 157, 189], [2026, 7, 4001023.75, 1749830.15, 115, 119],
+      [2026, 8, 3961270.69, 1782630.69, 98, 115, 7101555.30]
+    ].map(([year, month, rent, sale, rentUnits, saleUnits, total]) => ({ year, month, rent, sale, rentUnits, saleUnits, total: total ?? OFFICIAL_TOTALS[year][month] }));
+
+    const COLORS = { 2025: "#e8755f", 2026: "#25876b", rent: "#25876b", sale: "#e8755f" };
+    const money = value => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
+    const integer = value => new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 }).format(value);
+    const percent = value => `${value > 0 ? "+" : ""}${new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(value)}%`;
+    const getValue = (row, type) => type === "locacao" ? row.rent : type === "venda" ? row.sale : (row.total ?? row.rent + row.sale);
+    const getUnits = (row, type) => type === "locacao" ? row.rentUnits : type === "venda" ? row.saleUnits : row.rentUnits + row.saleUnits;
+    const sum = rows => rows.reduce((total, row) => total + row.value, 0);
+    const getRows = (year, month, type) => DATA
+      .filter(row => (year === "all" || row.year === Number(year)) && (month === "all" || row.month === Number(month)))
+      .map(row => ({ ...row, value: getValue(row, type), units: getUnits(row, type) }));
+    const availableYears = () => {
+      const year = document.querySelector("#yearFilter").value;
+      return year === "all" ? [2025, 2026] : [Number(year)];
+    };
+    const currentMonth = () => document.querySelector("#monthFilter").value;
+    const currentType = () => document.querySelector("#transactionFilter").value;
+    const displayMoney = value => money(value).replace("R$", "R$");
+    const shortMoney = value => (value / 1000000).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+
+    function chip(year, value, colorClass, suffix = "", formatValue = displayMoney) {
+      return `<span class="total-chip"><span class="legend-dot ${colorClass}"></span>${year}<strong>${formatValue(value)}${suffix}</strong></span>`;
+    }
+
+    function renderKpis(years, month, type) {
+      const values = {};
+      for (const year of [2025, 2026]) {
+        values[year] = sum(getRows(year, month, type).map(row => ({ value: row.value })));
+        document.querySelector(`#kpi${year}`).textContent = years.includes(year) ? displayMoney(values[year]) : "—";
+        const latestMonth = Math.max(...DATA.filter(row => row.year === year).map(row => row.month));
+        document.querySelector(`#foot${year}`).textContent = month === "all"
+          ? year === 2026 ? `Jan a ${MONTHS[latestMonth].toLowerCase()} · parcial` : "Jan a dez · completo"
+          : MONTHS[Number(month)];
+      }
+
+      const commonMonths = month === "all" ? MONTHS.map((_, index) => index).filter(index => DATA.some(row => row.year === 2025 && row.month === index) && DATA.some(row => row.year === 2026 && row.month === index)) : [Number(month)];
+      const comparable = commonMonths.every(index => DATA.some(row => row.year === 2025 && row.month === index) && DATA.some(row => row.year === 2026 && row.month === index));
+      const total25 = sum(getRows(2025, month === "all" ? "all" : month, type).filter(row => commonMonths.includes(row.month)).map(row => ({ value: row.value })));
+      const total26 = sum(getRows(2026, month === "all" ? "all" : month, type).filter(row => commonMonths.includes(row.month)).map(row => ({ value: row.value })));
+      const change = total25 ? (total26 - total25) / total25 * 100 : 0;
+      const changeElement = document.querySelector("#kpiChange");
+      const canCompare = years.length === 2 && comparable && total25 > 0 && total26 > 0;
+      changeElement.textContent = canCompare ? percent(change) : "—";
+      changeElement.classList.toggle("positive", canCompare && change >= 0);
+      changeElement.classList.toggle("negative", canCompare && change < 0);
+      const commonPeriod = commonMonths.length > 1 ? `Jan a ${MONTHS[Math.max(...commonMonths)].toLowerCase()}` : MONTHS[commonMonths[0]].toLowerCase();
+      document.querySelector("#footChange").textContent = month === "all" ? `${commonPeriod} · mesmos meses` : `${MONTHS[Number(month)]} · mesmo mês`;
+
+      const periodRows = DATA.filter(row => month === "all" || row.month === Number(month));
+      document.querySelector("#kpiUnits").innerHTML = [2025, 2026].map(year => {
+        const units = periodRows.filter(row => row.year === year).reduce((total, row) => total + getUnits(row, type), 0);
+        const value = years.includes(year) ? integer(units) : "—";
+        return `<span class="kpi-year" data-year="${year}"><span class="kpi-year-label"><span class="kpi-year-dot"></span>${year}</span><strong class="kpi-year-count">${value}</strong></span>`;
+      }).join("");
+      document.querySelector("#footUnits").textContent = month === "all" ? "Total expedido no período" : `Total em ${MONTHS[Number(month)]}`;
+
+      document.querySelector("#periodNote").innerHTML = years.length === 2
+        ? "Comparação equivalente: <strong>meses disponíveis nos dois anos</strong>"
+        : `Visualizando <strong>${years[0]}</strong>${years[0] === 2026 ? ` · parcial até ${MONTHS[Math.max(...DATA.filter(row => row.year === 2026).map(row => row.month))].toLowerCase()}` : " · ano completo"}`;
+    }
+
+    function svgBars(rows, years, metric) {
+      const selectedMonth = currentMonth();
+      const labels = selectedMonth === "all" ? MONTHS.map((_, index) => index) : [Number(selectedMonth)];
+      const available = labels.flatMap(month => years.flatMap(year => rows.filter(row => row.year === year && row.month === month)));
+      if (!available.length) return '<div class="empty-state">Não há valores disponíveis para este recorte.</div>';
+
+      const width = 1080, height = 330, left = 72, right = 20, top = 39, bottom = 42;
+      const plotWidth = width - left - right, plotHeight = height - top - bottom;
+      const maximum = Math.max(...available.map(row => metric === "revenue" ? row.value : row.units), 1);
+      const scaleMax = Math.ceil(maximum / (metric === "revenue" ? 2000000 : 100)) * (metric === "revenue" ? 2000000 : 100);
+      const barWidth = years.length === 2 ? Math.min(24, plotWidth / labels.length * .25) : Math.min(36, plotWidth / labels.length * .38);
+      const gap = years.length === 2 ? 5 : 0;
+      const grid = Array.from({ length: 5 }, (_, index) => {
+        const value = scaleMax * index / 4, y = top + plotHeight * (1 - index / 4);
+        const label = metric === "revenue" ? `${(value / 1000000).toLocaleString("pt-BR", { maximumFractionDigits: 0 })}` : integer(value);
+        return `<line class="grid-line" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"/><text class="axis-label" x="${left - 10}" y="${y + 3}" text-anchor="end">${label}</text>`;
+      }).join("");
+      const bars = labels.map((month, index) => {
+        const center = left + plotWidth * (index + .5) / labels.length;
+        const series = years.map(year => rows.find(row => row.year === year && row.month === month)).filter(Boolean);
+        const totalWidth = series.length * barWidth + Math.max(0, series.length - 1) * gap;
+        const rects = series.map(row => {
+          const raw = metric === "revenue" ? row.value : row.units;
+          const barHeight = Math.max(1, plotHeight * raw / scaleMax);
+          const x = center - totalWidth / 2 + series.indexOf(row) * (barWidth + gap);
+          const y = top + plotHeight - barHeight;
+          const label = metric === "revenue" ? `R$ ${shortMoney(raw)}` : integer(raw);
+          const tooltip = metric === "revenue" ? `${row.year} · ${MONTHS[month]} · ${displayMoney(raw)}` : `${row.year} · ${MONTHS[month]} · ${integer(raw)} totens`;
+          const paired = series.length === 2;
+          const labelX = x + barWidth / 2 + (paired ? row.year === 2025 ? -3 : 3 : 0);
+          const labelAnchor = paired ? row.year === 2025 ? "end" : "start" : "middle";
+          const labelClass = metric === "revenue" ? "bar-label revenue-label" : "bar-label";
+          return `<g><title>${tooltip}</title><rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="2" fill="${COLORS[row.year]}"/><text class="${labelClass}" x="${labelX}" y="${Math.max(13, y - 6)}" text-anchor="${labelAnchor}">${label}</text></g>`;
+        }).join("");
+        return `${rects}<text class="month-label" x="${center}" y="${height - 15}" text-anchor="middle">${MONTHS[month]}</text>`;
+      }).join("");
+      return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${metric === "revenue" ? "Faturamento" : "Totens movimentados"} por mês">${grid}${bars}</svg>`;
+    }
+
+    function renderRevenue(years, month, type) {
+      const rows = getRows("all", month, type);
+      document.querySelector("#revenueTotals").innerHTML = years.map(year => chip(year, sum(rows.filter(row => row.year === year).map(row => ({ value: row.value }))), year === 2025 ? "" : "y26")).join("");
+      document.querySelector("#revenueChart").innerHTML = svgBars(rows, years, "revenue");
+    }
+
+    function renderMix(years, month, type) {
+      const rows = DATA.filter(row => years.includes(row.year) && (month === "all" || row.month === Number(month)));
+      const annualTotals = years.map(year => {
+        const yearRows = rows.filter(row => row.year === year);
+        const values = type === "total"
+          ? yearRows.filter(row => row.total != null).map(row => row.total)
+          : yearRows.map(row => type === "locacao" ? row.rent : row.sale);
+        return { year, value: values.reduce((sum, value) => sum + value, 0), available: values.length > 0 };
+      });
+      const total = annualTotals.reduce((sum, row) => sum + (row.available ? row.value : 0), 0);
+      document.querySelector("#mixSubtitle").textContent = type === "total"
+        ? "Soma do campo Total geral · meses sem consolidação ficam fora"
+        : `Soma de ${type === "locacao" ? "locações" : "vendas"} por ano`;
+      if (!total) {
+        document.querySelector("#mixChart").innerHTML = '<div class="empty-state">Sem valores para exibir.</div>';
+        return;
+      }
+      const circumference = 2 * Math.PI * 68;
+      let offset = 0;
+      const segments = annualTotals.filter(row => row.value > 0);
+      const rings = segments.map(segment => {
+        const length = circumference * segment.value / total;
+        const color = COLORS[segment.year];
+        const ring = `<circle cx="110" cy="110" r="68" fill="none" stroke="${color}" stroke-width="23" stroke-dasharray="${length} ${circumference - length}" stroke-dashoffset="${-offset}" transform="rotate(-90 110 110)"/>`;
+        offset += length;
+        return ring;
+      }).join("");
+      const legend = annualTotals.map(row => {
+        const yearColor = row.year === 2026 ? "y26" : "";
+        const value = row.available ? displayMoney(row.value) : "Sem total oficial";
+        const share = row.available ? `${Math.round(row.value / total * 100)}% do total considerado` : "Sem valor consolidado neste período";
+        return `<div class="mix-row"><span class="legend-dot ${yearColor}"></span><span class="name">${row.year}</span><strong>${value}</strong><small>${share}</small></div>`;
+      }).join("");
+      const description = annualTotals.map(row => `${row.year}: ${row.available ? displayMoney(row.value) : "sem total oficial"}`).join(", ");
+      document.querySelector("#mixChart").innerHTML = `
+        <svg class="donut" viewBox="0 0 220 220" role="img" aria-label="Faturamento total por ano: ${description}">
+          <circle cx="110" cy="110" r="68" fill="none" stroke="#edf0e9" stroke-width="23"/>
+          ${rings}
+          <text class="donut-total" x="110" y="106">${total >= 1000000 ? `${shortMoney(total)} mi` : displayMoney(total)}</text><text class="donut-caption" x="110" y="125">total consolidado</text>
+        </svg>
+        <div class="mix-legend">${legend}</div>`;
+    }
+
+    function renderUnits(years, month, type) {
+      const rows = getRows("all", month, type);
+      document.querySelector("#unitTotals").innerHTML = years.map(year => {
+        const total = rows.filter(row => row.year === year).reduce((value, row) => value + row.units, 0);
+        return chip(year, total, year === 2025 ? "" : "y26", "", integer);
+      }).join("");
+      document.querySelector("#unitChart").innerHTML = svgBars(rows, years, "units");
+    }
+
+    function renderTable(years, month, type) {
+      const months = month === "all" ? MONTHS.map((_, index) => index) : [Number(month)];
+      const values = {};
+      for (const year of [2025, 2026]) {
+        values[year] = months.map(index => DATA.find(row => row.year === year && row.month === index));
+      }
+      const cellMoney = row => row && years.includes(row.year) ? displayMoney(getValue(row, type)) : "—";
+      const cellUnits = row => row && years.includes(row.year) ? integer(getUnits(row, type)) : "—";
+      const body = months.map((index, position) => {
+        const row25 = values[2025][position], row26 = values[2026][position];
+        const canCompare = years.length === 2 && row25 && row26;
+        const difference = canCompare && getValue(row25, type) ? percent((getValue(row26, type) / getValue(row25, type) - 1) * 100) : "—";
+        return `<tr><td>${MONTHS[index]}</td><td>${cellMoney(row25)}</td><td>${cellMoney(row26)}</td><td>${difference}</td><td>${cellUnits(row25)}</td><td>${cellUnits(row26)}</td></tr>`;
+      }).join("");
+      const totals = [2025, 2026].map(year => sum(values[year].filter(Boolean).map(row => ({ value: getValue(row, type) }))));
+      const units = [2025, 2026].map(year => values[year].filter(Boolean).reduce((total, row) => total + getUnits(row, type), 0));
+      const monthsInBoth = months.filter(index => DATA.some(row => row.year === 2025 && row.month === index) && DATA.some(row => row.year === 2026 && row.month === index));
+      const comparable25 = sum(getRows(2025, "all", type).filter(row => monthsInBoth.includes(row.month)).map(row => ({ value: row.value })));
+      const comparable26 = sum(getRows(2026, "all", type).filter(row => monthsInBoth.includes(row.month)).map(row => ({ value: row.value })));
+      const difference = years.length === 2 && comparable25 ? percent((comparable26 / comparable25 - 1) * 100) : "—";
+      document.querySelector("#detailTable").innerHTML = `<table><thead><tr><th>Mês</th><th>Faturamento 2025</th><th>Faturamento 2026</th><th>Variação</th><th>Totens 2025</th><th>Totens 2026</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total do recorte</td><td>${years.includes(2025) ? displayMoney(totals[0]) : "—"}</td><td>${years.includes(2026) ? displayMoney(totals[1]) : "—"}</td><td>${difference}</td><td>${years.includes(2025) ? integer(units[0]) : "—"}</td><td>${years.includes(2026) ? integer(units[1]) : "—"}</td></tr></tfoot></table>`;
+    }
+
+    function parseSourceNumber(value) {
+      const raw = String(value ?? "").trim();
+      if (!raw) return null;
+      const normalized = raw.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function readSourceSection(rows, title, valueHeader, unitsHeader) {
+      const sectionIndex = rows.findIndex(row => row.some(cell => String(cell ?? "").trim() === title));
+      if (sectionIndex < 0) throw new Error(`Seção ausente: ${title}`);
+      const sectionRow = rows[sectionIndex];
+      const startColumn = sectionRow.findIndex(cell => String(cell ?? "").trim() === title);
+      const headers = rows[sectionIndex + 1];
+      const column = name => headers.findIndex((header, index) => index >= startColumn && String(header ?? "").trim().toLocaleLowerCase("pt-BR") === name.toLocaleLowerCase("pt-BR"));
+      const valueColumn = column(valueHeader);
+      const unitsColumn = column(unitsHeader);
+      if (valueColumn < 0 || unitsColumn < 0) throw new Error(`Colunas ausentes na seção: ${title}`);
+
+      const records = new Map();
+      for (const row of rows.slice(sectionIndex + 2)) {
+        const key = String(row[startColumn] ?? "").trim().toLocaleLowerCase("pt-BR").replace(/\.$/, "");
+        const month = MONTH_KEYS.indexOf(key);
+        if (month < 0) break;
+        records.set(month, { value: parseSourceNumber(row[valueColumn]), units: parseSourceNumber(row[unitsColumn]) });
+      }
+      return records;
+    }
+
+    function parseSheetCsv(csvText) {
+      const parsed = Papa.parse(csvText.replace(/^\uFEFF/, ""), { skipEmptyLines: false });
+      if (parsed.errors.some(error => error.type === "Quotes")) throw new Error("CSV inválido");
+      const rows = parsed.data;
+      const sections = {
+        2025: {
+          rent: readSourceSection(rows, "LOCAÇÃO 2025 - Recibos pagos", "Valor Recebimento", "Quantidade Novos totens Enviados"),
+          sale: readSourceSection(rows, "VENDA 2025", "Valor Total", "Quantidade Enviada"),
+          total: readSourceSection(rows, "Vendas e Locações 2025", "Total geral", "Locação")
+        },
+        2026: {
+          rent: readSourceSection(rows, "LOCAÇÃO 2026 - Totens ativos", "Valor recorrência", "Quantidade Novos totens Enviados"),
+          sale: readSourceSection(rows, "VENDA 2026", "Valor Total", "Quantidade Enviada"),
+          total: readSourceSection(rows, "Vendas e Locações 2026", "Total geral", "Locação")
+        }
+      };
+
+      return [2025, 2026].flatMap(year => MONTH_KEYS.flatMap((_, month) => {
+        const rent = sections[year].rent.get(month);
+        const sale = sections[year].sale.get(month);
+        const consolidated = sections[year].total.get(month);
+        if (rent?.value == null && sale?.value == null) return [];
+        return [{
+          year,
+          month,
+          rent: rent?.value ?? 0,
+          sale: sale?.value ?? 0,
+          rentUnits: rent?.units ?? 0,
+          saleUnits: sale?.units ?? 0,
+          total: consolidated?.value ?? undefined
+        }];
+      }));
+    }
+
+    async function refreshFromSheet() {
+      const button = document.querySelector("#refreshButton");
+      const status = document.querySelector("#dataStatus");
+      button.disabled = true;
+      button.textContent = "Atualizando...";
+      try {
+        const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error(`A planilha respondeu com ${response.status}`);
+        const freshData = parseSheetCsv(await response.text());
+        if (!freshData.length) throw new Error("A planilha não retornou linhas mensais");
+        DATA = freshData;
+        render();
+        const latestMonth = Math.max(...DATA.filter(row => row.year === 2026).map(row => row.month));
+        status.textContent = `Planilha atualizada às ${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })} · 2026 parcial até ${MONTHS[latestMonth].toLowerCase()}.`;
+      } catch (error) {
+        status.textContent = "Sem conexão com a planilha · exibindo a última cópia incorporada.";
+        console.warn("Não foi possível atualizar o painel pela planilha.", error);
+      } finally {
+        button.disabled = false;
+        button.textContent = "Atualizar dados";
+      }
+    }
+
+    function render() {
+      const years = availableYears(), month = currentMonth(), type = currentType();
+      renderKpis(years, month, type);
+      renderRevenue(years, month, type);
+      renderMix(years, month, type);
+      renderUnits(years, month, type);
+      renderTable(years, month, type);
+    }
+
+    document.querySelectorAll(".filters select").forEach(select => select.addEventListener("change", render));
+    document.querySelector("#refreshButton").addEventListener("click", refreshFromSheet);
+    render();
+    refreshFromSheet();
+  </script>
+</body>
+</html>
