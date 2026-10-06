@@ -582,7 +582,10 @@
         const value25 = row25 ? getValue(row25, type) : null;
         const value26 = row26 ? getValue(row26, type) : null;
         const difference = years.length === 2 && value25 != null && value26 != null && value25 !== 0 ? percent((value26 / value25 - 1) * 100) : "—";
-        return `<tr><td>${MONTHS[index]}</td><td>${cellMoney(row25)}</td><td>${cellMoney(row26)}</td><td>${difference}</td><td>${cellUnits(row25)}</td><td>${cellUnits(row26)}</td></tr>`;
+        const units25 = row25 ? getUnits(row25, type) : null;
+        const units26 = row26 ? getUnits(row26, type) : null;
+        const unitsDifference = years.length === 2 && units25 != null && units26 != null && units25 !== 0 ? percent((units26 / units25 - 1) * 100) : "—";
+        return `<tr><td>${MONTHS[index]}</td><td>${cellMoney(row25)}</td><td>${cellMoney(row26)}</td><td>${difference}</td><td>${cellUnits(row25)}</td><td>${cellUnits(row26)}</td><td>${unitsDifference}</td></tr>`;
       }).join("");
       const totals = [2025, 2026].map(year => {
         const amounts = values[year].filter(Boolean).map(row => getValue(row, type)).filter(value => value != null);
@@ -594,10 +597,18 @@
         const row26 = DATA.find(row => row.year === 2026 && row.month === index);
         return row25 && row26 && getValue(row25, type) != null && getValue(row26, type) != null;
       });
+      const monthsWithUnitsInBoth = months.filter(index =>
+        DATA.some(row => row.year === 2025 && row.month === index) && DATA.some(row => row.year === 2026 && row.month === index)
+      );
       const comparable25 = sum(getRows(2025, "all", type).filter(row => monthsInBoth.includes(row.month) && row.value != null).map(row => ({ value: row.value })));
       const comparable26 = sum(getRows(2026, "all", type).filter(row => monthsInBoth.includes(row.month) && row.value != null).map(row => ({ value: row.value })));
       const difference = years.length === 2 && comparable25 ? percent((comparable26 / comparable25 - 1) * 100) : "—";
-      document.querySelector("#detailTable").innerHTML = `<table><thead><tr><th>Mês</th><th>Faturamento 2025</th><th>Faturamento 2026</th><th>Variação</th><th>Totens 2025</th><th>Totens 2026</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total do recorte</td><td>${years.includes(2025) && totals[0] != null ? displayMoney(totals[0]) : "—"}</td><td>${years.includes(2026) && totals[1] != null ? displayMoney(totals[1]) : "—"}</td><td>${difference}</td><td>${years.includes(2025) ? integer(units[0]) : "—"}</td><td>${years.includes(2026) ? integer(units[1]) : "—"}</td></tr></tfoot></table>`;
+      const comparableUnits = [2025, 2026].map(year => monthsWithUnitsInBoth.reduce((total, index) => {
+        const row = DATA.find(item => item.year === year && item.month === index);
+        return total + getUnits(row, type);
+      }, 0));
+      const unitsDifference = years.length === 2 && comparableUnits[0] ? percent((comparableUnits[1] / comparableUnits[0] - 1) * 100) : "—";
+      document.querySelector("#detailTable").innerHTML = `<table><thead><tr><th>Mês</th><th>Faturamento 2025</th><th>Faturamento 2026</th><th>Variação</th><th>Totens 2025</th><th>Totens 2026</th><th>Variação totens (%)</th></tr></thead><tbody>${body}</tbody><tfoot><tr><td>Total do recorte</td><td>${years.includes(2025) && totals[0] != null ? displayMoney(totals[0]) : "—"}</td><td>${years.includes(2026) && totals[1] != null ? displayMoney(totals[1]) : "—"}</td><td>${difference}</td><td>${years.includes(2025) ? integer(units[0]) : "—"}</td><td>${years.includes(2026) ? integer(units[1]) : "—"}</td><td>${unitsDifference}</td></tr></tfoot></table>`;
     }
 
     function parseSourceNumber(value) {
