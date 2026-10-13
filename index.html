@@ -106,10 +106,18 @@
     .empty-state { display: grid; min-height: 250px; place-items: center; color: #829087; font-size: 13px; text-align: center; }
     .active-chart-scroll { width: 100%; overflow-x: auto; }
     .active-chart-svg { display: block; width: 100%; min-width: 900px; height: auto; }
-    .active-line { fill: none; stroke: var(--forest-2); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
+    .active-line { fill: none; stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
     .active-point { stroke: var(--surface); stroke-width: 2; }
-    .active-value-label { fill: #37473f; font: 600 10px "DM Sans", sans-serif; }
-    .active-recurrence-label { fill: #627269; font: 700 8.5px "DM Sans", sans-serif; }
+    .active-axis-right { fill: #87938b; font: 10px "DM Sans", sans-serif; }
+    .active-chart-data-label { font: 700 8px "DM Sans", sans-serif; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; stroke-linejoin: round; }
+    .active-revenue-label { fill: #37473f; }
+    .active-units-label { fill: #37473f; }
+    .active-chart-legend { display: flex; flex-wrap: wrap; gap: 12px 18px; padding: 4px 10px 8px; color: #65736b; font-size: 10px; }
+    .active-legend-item { display: inline-flex; align-items: center; gap: 6px; }
+    .active-legend-line { width: 16px; height: 0; border-top: 2px solid; }
+    .active-legend-bar { width: 9px; height: 9px; border-radius: 2px; }
+    .active-legend-2025 { border-color: var(--year25); background: var(--year25); }
+    .active-legend-2026 { border-color: var(--year26); background: var(--year26); }
     .active-month-label { fill: #53645b; font: 9px "DM Sans", sans-serif; }
 
     .mix-panel { display: flex; flex-direction: column; }
@@ -292,10 +300,18 @@
 
     <section class="panel active-panel" aria-label="Evolução dos totens ativos">
       <div class="panel-head">
-        <div><h2 class="panel-title">Evolução dos totens ativos</h2><p class="panel-subtitle">Quantidade ativa por mês · desde jan/2025</p></div>
+        <div><h2 class="panel-title">Recorrência e totens ativos</h2><p class="panel-subtitle">Recorrência mensal em barras (R$) · totens ativos em linhas</p></div>
         <div class="totals" id="activeTotals" aria-label="Último total ativo por ano"></div>
       </div>
-      <div class="chart-wrap"><div class="active-chart-scroll" id="activeChart"></div></div>
+      <div class="chart-wrap">
+        <div class="active-chart-legend" aria-label="Legenda do gráfico">
+          <span class="active-legend-item"><i class="active-legend-bar active-legend-2025"></i>Recorrência 2025</span>
+          <span class="active-legend-item"><i class="active-legend-bar active-legend-2026"></i>Recorrência 2026</span>
+          <span class="active-legend-item"><i class="active-legend-line active-legend-2025"></i>Totens ativos 2025</span>
+          <span class="active-legend-item"><i class="active-legend-line active-legend-2026"></i>Totens ativos 2026</span>
+        </div>
+        <div class="active-chart-scroll" id="activeChart"></div>
+      </div>
     </section>
 
     <section class="panel detail-panel">
@@ -603,10 +619,10 @@
     function renderActiveTowers(years, month) {
       const months = new Set(selectedMonths(month, currentPeriod()));
       const rows = DATA
-        .filter(row => years.includes(row.year) && months.has(row.month) && row.active != null)
+        .filter(row => years.includes(row.year) && months.has(row.month) && (row.active != null || row.rent != null))
         .sort((first, second) => first.year - second.year || first.month - second.month);
       document.querySelector("#activeTotals").innerHTML = years.map(year => {
-        const yearRows = rows.filter(row => row.year === year);
+        const yearRows = rows.filter(row => row.year === year && row.active != null);
         const latest = yearRows.at(-1);
         return chip(year, latest?.active ?? null, year === 2025 ? "" : "y26", "", integer);
       }).join("");
@@ -616,32 +632,51 @@
       }
 
       const width = Math.max(900, 92 + Math.max(0, rows.length - 1) * 52);
-      const height = 350, left = 66, right = 24, top = 38, bottom = 54;
+      const height = 350, left = 72, right = 68, top = 34, bottom = 54;
       const plotWidth = width - left - right, plotHeight = height - top - bottom;
-      const maxActive = Math.max(...rows.map(row => row.active), 1);
-      const tickStep = Math.max(1000, Math.ceil(maxActive / 3000) * 1000);
-      const scaleMax = tickStep * 3;
-      const ticks = [0, tickStep, tickStep * 2, scaleMax].map(value => {
-        const y = top + plotHeight * (1 - value / scaleMax);
-        return `<line class="grid-line" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"/><text class="axis-label" x="${left - 10}" y="${y + 3}" text-anchor="end">${integer(value)}</text>`;
+      const maxActive = Math.max(...rows.map(row => row.active ?? 0), 1);
+      const activeStep = Math.max(1000, Math.ceil(maxActive / 4 / 1000) * 1000);
+      const activeMax = activeStep * 4;
+      const maxRent = Math.max(...rows.map(row => row.rent ?? 0), 1);
+      const rentStep = Math.max(1000000, Math.ceil(maxRent / 4 / 1000000) * 1000000);
+      const rentMax = rentStep * 4;
+      const ticks = Array.from({ length: 5 }, (_, index) => {
+        const active = activeStep * index;
+        const rent = rentStep * index;
+        const y = top + plotHeight * (1 - index / 4);
+        return `<line class="grid-line" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"/><text class="axis-label" x="${left - 10}" y="${y + 3}" text-anchor="end">${shortMoney(rent)} mi</text><text class="active-axis-right" x="${width - right + 10}" y="${y + 3}" text-anchor="start">${integer(active)}</text>`;
       }).join("");
-      const points = rows.map((row, index) => ({
+      const positions = rows.map((row, index) => ({
         ...row,
         x: rows.length === 1 ? left + plotWidth / 2 : left + plotWidth * index / (rows.length - 1),
-        y: top + plotHeight * (1 - row.active / scaleMax)
+        activeY: row.active == null ? null : top + plotHeight * (1 - row.active / activeMax),
+        rentY: row.rent == null ? null : top + plotHeight * (1 - row.rent / rentMax)
       }));
-      const line = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
-      const marks = points.map(point => {
+      const barWidth = Math.min(22, plotWidth / rows.length * .5);
+      const bars = positions.filter(point => point.rent != null).map(point => {
+        const barHeight = Math.max(1, plotHeight * point.rent / rentMax);
+        const color = COLORS[point.year];
+        const barTop = top + plotHeight - barHeight;
+        const label = `${shortMoney(point.rent)} mi`;
+        return `<g><title>${point.year} · ${MONTHS[point.month]} · Recorrência ${displayMoney(point.rent)}</title><rect x="${point.x - barWidth / 2}" y="${barTop}" width="${barWidth}" height="${barHeight}" rx="2" fill="${color}" opacity=".72"/><text class="active-chart-data-label active-revenue-label" x="${point.x}" y="${barTop - 5}" text-anchor="middle">${label}</text></g>`;
+      }).join("");
+      const lines = years.map(year => {
+        const points = positions.filter(point => point.year === year && point.activeY != null);
+        if (!points.length) return "";
+        const path = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.activeY}`).join(" ");
+        return `<path class="active-line" d="${path}" stroke="${COLORS[year]}"/>`;
+      }).join("");
+      const marks = positions.map(point => {
         const monthLabel = `${MONTHS[point.month]}/${String(point.year).slice(-2)}`;
-        const valueY = Math.max(top + 11, point.y - 12);
-        const recurrenceY = valueY + 12;
-        const recurrenceLabel = point.rent != null && point.rent > 0
-          ? `<text class="active-recurrence-label" x="${point.x}" y="${recurrenceY}" text-anchor="middle">${displayMoney(point.rent)}</text>`
-          : "";
-        return `<g><title>${point.year} · ${MONTHS[point.month]} · ${integer(point.active)} totens ativos · recorrência ${displayMoney(point.rent ?? 0)}</title><circle class="active-point" cx="${point.x}" cy="${point.y}" r="4.5" fill="${COLORS[point.year]}"/><text class="active-value-label" x="${point.x}" y="${valueY}" text-anchor="middle">${integer(point.active)}</text>${recurrenceLabel}<text class="active-month-label" x="${point.x}" y="${height - 18}" text-anchor="middle">${monthLabel}</text></g>`;
+        const activeMark = point.activeY == null ? "" : `<circle class="active-point" cx="${point.x}" cy="${point.activeY}" r="4" fill="${COLORS[point.year]}"/><text class="active-chart-data-label active-units-label" x="${point.x}" y="${point.activeY - 8}" text-anchor="middle">${integer(point.active)}</text>`;
+        const description = [
+          point.active == null ? "" : `${integer(point.active)} totens ativos`,
+          point.rent == null ? "" : `recorrência ${displayMoney(point.rent)}`
+        ].filter(Boolean).join(" · ");
+        return `<g><title>${point.year} · ${MONTHS[point.month]} · ${description}</title>${activeMark}<text class="active-month-label" x="${point.x}" y="${height - 18}" text-anchor="middle">${monthLabel}</text></g>`;
       }).join("");
       const range = `${MONTHS[rows[0].month]}/${rows[0].year} a ${MONTHS[rows.at(-1).month]}/${rows.at(-1).year}`;
-      document.querySelector("#activeChart").innerHTML = `<svg class="active-chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Totens ativos: ${range}">${ticks}<path class="active-line" d="${line}"/>${marks}</svg>`;
+      document.querySelector("#activeChart").innerHTML = `<svg class="active-chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Recorrência mensal em reais como barras e quantidade de totens ativos como linhas: ${range}">${ticks}${bars}${lines}${marks}</svg>`;
     }
 
     function renderTable(years, month, type) {
