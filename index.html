@@ -51,6 +51,11 @@
     .refresh-button:disabled { cursor: wait; opacity: .65; }
 
     main { padding: 22px 24px 42px; }
+    .dashboard-tabs { display: flex; gap: 8px; margin-bottom: 21px; border-bottom: 1px solid #dce1d8; }
+    .dashboard-tab { padding: 11px 16px; border: 0; border-bottom: 3px solid transparent; color: #68776e; background: transparent; cursor: pointer; font-size: 13px; font-weight: 700; }
+    .dashboard-tab[aria-selected="true"] { border-bottom-color: var(--lime); color: var(--forest); }
+    .dashboard-tab:focus-visible, .refresh-button:focus-visible { outline: 3px solid #9ccd50; outline-offset: 2px; }
+    .dashboard-panel[hidden] { display: none; }
     .filters { display: flex; align-items: end; flex-wrap: wrap; gap: 14px 24px; padding: 0 0 20px; border-bottom: 1px solid #dce1d8; }
     .filter { display: grid; gap: 6px; min-width: 170px; }
     .filter label { color: #53645b; font-size: 10px; font-weight: 700; letter-spacing: .9px; text-transform: uppercase; }
@@ -104,6 +109,7 @@
     .active-line { fill: none; stroke: var(--forest-2); stroke-width: 2.5; stroke-linejoin: round; stroke-linecap: round; }
     .active-point { stroke: var(--surface); stroke-width: 2; }
     .active-value-label { fill: #37473f; font: 600 10px "DM Sans", sans-serif; }
+    .active-recurrence-label { fill: #627269; font: 700 8.5px "DM Sans", sans-serif; }
     .active-month-label { fill: #53645b; font: 9px "DM Sans", sans-serif; }
 
     .mix-panel { display: flex; flex-direction: column; }
@@ -130,6 +136,15 @@
     tfoot td { border-top: 1px solid #dfe5dc; border-bottom: 0; color: var(--ink); font-weight: 700; }
     .status-note { display: flex; align-items: center; gap: 8px; margin: 13px 0 0; color: #7d8982; font-size: 10px; }
     .status-note::before { width: 6px; height: 6px; border-radius: 50%; background: var(--year26); content: ""; }
+    .wow-filters { display: flex; align-items: end; padding-bottom: 17px; }
+    .wow-grid { display: grid; grid-template-columns: minmax(0, 1.6fr) minmax(280px, 1fr); align-items: start; gap: 14px; margin-top: 14px; }
+    .wow-category-column { display: grid; align-content: start; gap: 14px; min-width: 0; }
+    .wow-table { margin-top: 14px; overflow: hidden; }
+    .wow-grid > .wow-table { margin-top: 0; }
+    .wow-category-column .wow-table { margin-top: 0; }
+    .wow-table table { min-width: 360px; }
+    .wow-message { min-height: 250px; padding: 28px; color: #829087; font-size: 13px; text-align: center; }
+    .wow-total-row td { border-top: 1px solid #dfe5dc; color: var(--ink); font-weight: 700; }
     footer { display: flex; justify-content: space-between; gap: 14px; padding: 17px 0 0; color: #88938c; font-size: 10px; }
     footer a { color: #496e5c; text-decoration: none; }
 
@@ -162,6 +177,10 @@
       .chart-wrap { padding-right: 5px; padding-left: 5px; }
       .mix-content { padding-bottom: 17px; }
       footer { flex-direction: column; }
+      .dashboard-tabs { overflow-x: auto; }
+      .dashboard-tab { flex: none; padding-right: 12px; padding-left: 12px; }
+      .wow-grid { grid-template-columns: 1fr; gap: 10px; }
+      .wow-grid .panel-head { flex-direction: column; }
     }
     @media (prefers-reduced-motion: no-preference) {
       .panel, .kpi { animation: arrive .45s both; }
@@ -178,18 +197,24 @@
       <p class="eyebrow">Painel executivo · desempenho comercial</p>
       <div class="masthead-row">
         <div>
-          <h1>2025 <span style="color:var(--lime)">x</span> 2026</h1>
-          <p class="masthead-copy">Faturamento, locações e vendas em uma visão comparativa.</p>
+          <h1 id="dashboardTitle">2025 <span style="color:var(--lime)">x</span> 2026</h1>
+          <p class="masthead-copy" id="dashboardCopy">Faturamento, locações e vendas em uma visão comparativa.</p>
         </div>
         <div class="masthead-actions">
           <button class="refresh-button" id="refreshButton" type="button">Atualizar dados</button>
-          <a class="source-link" href="https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/edit?gid=1301870631#gid=1301870631" target="_blank" rel="noreferrer">Abrir planilha de origem ↗</a>
+          <a class="source-link" id="sourceLink" href="https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/edit?gid=1301870631#gid=1301870631" target="_blank" rel="noreferrer">Abrir planilha de origem ↗</a>
         </div>
       </div>
     </div>
   </header>
 
   <main>
+    <nav class="dashboard-tabs" role="tablist" aria-label="Comparativos">
+      <button class="dashboard-tab" id="tab-compare" type="button" role="tab" aria-selected="true" aria-controls="panel-compare">Comparativo 2025 x 2026</button>
+      <button class="dashboard-tab" id="tab-wow" type="button" role="tab" aria-selected="false" aria-controls="panel-wow" tabindex="-1">Wow Service</button>
+    </nav>
+
+    <section class="dashboard-panel" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare">
     <section class="filters" aria-label="Filtros do painel">
       <div class="filter">
         <label for="yearFilter">Ano</label>
@@ -282,6 +307,51 @@
       <span>Fonte: Levantamento de faturamento 2025 x 2026</span>
       <span id="dataStatus" aria-live="polite">Exibindo os dados incorporados.</span>
     </footer>
+    </section>
+
+    <section class="dashboard-panel" id="panel-wow" role="tabpanel" aria-labelledby="tab-wow" hidden>
+      <section class="filters wow-filters" aria-label="Filtros Wow Service">
+        <div class="filter">
+          <label for="wowMonthFilter">Mês</label>
+          <select id="wowMonthFilter">
+            <option value="all">Todos os meses</option>
+            <option value="0">Janeiro</option><option value="1">Fevereiro</option><option value="2">Março</option>
+            <option value="3">Abril</option><option value="4">Maio</option><option value="5">Junho</option>
+            <option value="6">Julho</option><option value="7">Agosto</option><option value="8">Setembro</option>
+            <option value="9">Outubro</option><option value="10">Novembro</option><option value="11">Dezembro</option>
+          </select>
+        </div>
+      </section>
+
+      <section class="kpis" aria-label="Indicadores Wow Service">
+        <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Receita no período</p><p class="kpi-value" id="wowRevenue">—</p><p class="kpi-foot" id="wowRevenueFoot">Meses disponíveis</p></article>
+        <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Despesas no período</p><p class="kpi-value" id="wowExpenses">—</p><p class="kpi-foot" id="wowExpensesFoot">Meses disponíveis</p></article>
+        <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Lucro operacional</p><p class="kpi-value" id="wowProfit">—</p><p class="kpi-foot" id="wowProfitFoot">Receita menos despesas</p></article>
+        <article class="kpi"><p class="kpi-label"><span class="kpi-dot"></span>Margem operacional</p><p class="kpi-value" id="wowMargin">—</p><p class="kpi-foot" id="wowMarginFoot">Lucro sobre receita</p></article>
+      </section>
+
+      <section class="wow-grid">
+        <div class="wow-category-column">
+          <article class="panel wow-table">
+            <div class="panel-head"><div><h2 class="panel-title">Receitas por categoria</h2><p class="panel-subtitle" id="wowRevenueSubtitle">Valores da aba DRE WOW - AGRUPADO</p></div></div>
+            <div class="table-scroll" id="wowRevenueTable"></div>
+          </article>
+          <article class="panel wow-table">
+            <div class="panel-head"><div><h2 class="panel-title">Totens com Garantia Onsite (G.O.)</h2><p class="panel-subtitle">Quantidade de totens e rateio por totem</p></div></div>
+            <div class="table-scroll" id="wowTotemTable"></div>
+          </article>
+        </div>
+        <article class="panel wow-table wow-breakdown">
+          <div class="panel-head"><div><h2 class="panel-title">Despesas por categoria</h2><p class="panel-subtitle" id="wowBreakdownSubtitle">Valores da aba DRE WOW - AGRUPADO</p></div></div>
+          <div class="table-scroll" id="wowExpenseTable"></div>
+        </article>
+      </section>
+
+      <footer>
+        <span>Fonte: DRE WOW - AGRUPADO</span>
+        <span id="wowDataStatus" aria-live="polite">Carregando dados da planilha...</span>
+      </footer>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
@@ -305,6 +375,10 @@
       "quarter-4": "4º trimestre"
     };
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/export?format=csv&gid=1301870631";
+    const WOW_SHEET_URL = "https://docs.google.com/spreadsheets/d/1RGu5x3CXuAHpUF5fzdOy-njK6GWsDPW2gzmhjp-4No4/gviz/tq?sheet=DRE%20WOW%20-%20AGRUPADO&tqx=out%3Acsv";
+    const WOW_SHEET_PAGE_URL = "https://docs.google.com/spreadsheets/d/1RGu5x3CXuAHpUF5fzdOy-njK6GWsDPW2gzmhjp-4No4/edit?gid=803779247#gid=803779247";
+    const FULL_MONTHS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
+    let WOW_DATA = null;
     const OFFICIAL_TOTALS = {
       2025: [3849204.49, 4402864.13, 3720505.26, 4429361.40, 3806279.25, 5826539.68, 5153491.81, 5188276.75, 8174534.79, 8589392.98, 6888445.23, 4667767.45],
       2026: [6062336.45, 6171591.81, 5711897.20, 5807340.37, 5625403.20, 5262478.21, 6348955.95, 5750853.90, 5743901.38, 7130822.59]
@@ -559,7 +633,12 @@
       const line = points.map((point, index) => `${index === 0 ? "M" : "L"} ${point.x} ${point.y}`).join(" ");
       const marks = points.map(point => {
         const monthLabel = `${MONTHS[point.month]}/${String(point.year).slice(-2)}`;
-        return `<g><title>${point.year} · ${MONTHS[point.month]} · ${integer(point.active)} totens ativos</title><circle class="active-point" cx="${point.x}" cy="${point.y}" r="4.5" fill="${COLORS[point.year]}"/><text class="active-value-label" x="${point.x}" y="${Math.max(top + 11, point.y - 10)}" text-anchor="middle">${integer(point.active)}</text><text class="active-month-label" x="${point.x}" y="${height - 18}" text-anchor="middle">${monthLabel}</text></g>`;
+        const valueY = Math.max(top + 11, point.y - 12);
+        const recurrenceY = valueY + 12;
+        const recurrenceLabel = point.rent != null && point.rent > 0
+          ? `<text class="active-recurrence-label" x="${point.x}" y="${recurrenceY}" text-anchor="middle">${displayMoney(point.rent)}</text>`
+          : "";
+        return `<g><title>${point.year} · ${MONTHS[point.month]} · ${integer(point.active)} totens ativos · recorrência ${displayMoney(point.rent ?? 0)}</title><circle class="active-point" cx="${point.x}" cy="${point.y}" r="4.5" fill="${COLORS[point.year]}"/><text class="active-value-label" x="${point.x}" y="${valueY}" text-anchor="middle">${integer(point.active)}</text>${recurrenceLabel}<text class="active-month-label" x="${point.x}" y="${height - 18}" text-anchor="middle">${monthLabel}</text></g>`;
       }).join("");
       const range = `${MONTHS[rows[0].month]}/${rows[0].year} a ${MONTHS[rows.at(-1).month]}/${rows.at(-1).year}`;
       document.querySelector("#activeChart").innerHTML = `<svg class="active-chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="Totens ativos: ${range}">${ticks}<path class="active-line" d="${line}"/>${marks}</svg>`;
@@ -678,11 +757,153 @@
       }));
     }
 
+    const escapeHtml = value => String(value).replace(/[&<>"']/g, character => ({
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
+    })[character]);
+
+    function parseWowNumber(value) {
+      const raw = String(value ?? "").trim();
+      if (!raw || raw.startsWith("#")) return null;
+      const normalized = raw.replace(/[^\d,.-]/g, "").replace(/\./g, "").replace(",", ".");
+      if (!normalized || normalized === "-") return null;
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function parseWowSheetCsv(csvText) {
+      const parsed = Papa.parse(csvText.replace(/^\uFEFF/, ""), { skipEmptyLines: false });
+      if (parsed.errors.some(error => error.type === "Quotes")) throw new Error("CSV da Wow Service inválido");
+      const rows = parsed.data;
+      const headers = rows[0];
+      const expensesColumn = headers.findIndex(value => String(value ?? "").trim().toLocaleLowerCase("pt-BR") === "despesas");
+      const revenueColumn = headers.findIndex(value => String(value ?? "").trim().toLocaleLowerCase("pt-BR") === "receita");
+      if (expensesColumn < 0 || revenueColumn < 0) throw new Error("Seções de despesas e receita não encontradas na planilha Wow Service");
+      const expenseMonthColumns = {}, revenueMonthColumns = {};
+      headers.forEach((value, column) => {
+        const month = FULL_MONTHS.indexOf(String(value ?? "").trim().toLocaleLowerCase("pt-BR"));
+        if (month >= 0 && column > expensesColumn && column < revenueColumn) expenseMonthColumns[month] = column;
+        if (month >= 0 && column > revenueColumn) revenueMonthColumns[month] = column;
+      });
+      const availableMonths = Object.keys(expenseMonthColumns).map(Number).sort((first, second) => first - second);
+      if (!availableMonths.length) throw new Error("Colunas mensais não encontradas na planilha Wow Service");
+
+      const expenseRows = rows.slice(1).filter(row => String(row[expensesColumn] ?? "").trim());
+      const revenueRows = rows.slice(1).filter(row => String(row[revenueColumn] ?? "").trim());
+      const expenseTotal = expenseRows.find(row => String(row[expensesColumn]).trim().toLocaleLowerCase("pt-BR") === "total");
+      const revenueTotal = revenueRows.find(row => String(row[revenueColumn]).trim().toLocaleLowerCase("pt-BR") === "total");
+      if (!expenseTotal || !revenueTotal) throw new Error("Totais mensais não encontrados na planilha Wow Service");
+      const totemCount = expenseRows.find(row => String(row[expensesColumn]).toLocaleLowerCase("pt-BR").includes("quantidade de totens"));
+      const costPerTotem = expenseRows.find(row => String(row[expensesColumn]).toLocaleLowerCase("pt-BR").includes("rateio"));
+      const expenseItems = expenseRows.filter(row => {
+        const label = String(row[expensesColumn]).trim().toLocaleLowerCase("pt-BR");
+        return label !== "total" && !label.includes("quantidade de totens") && !label.includes("rateio");
+      }).map(row => ({
+        name: String(row[expensesColumn]).trim(),
+        values: availableMonths.map(month => parseWowNumber(row[expenseMonthColumns[month]]))
+      })).filter(item => item.values.some(value => value != null));
+      const revenueItems = revenueRows.filter(row => {
+        const label = String(row[revenueColumn]).trim().toLocaleLowerCase("pt-BR");
+        return label !== "total" && label !== "lucro";
+      }).map(row => ({
+        name: String(row[revenueColumn]).trim(),
+        values: availableMonths.map(month => parseWowNumber(row[revenueMonthColumns[month]]))
+      })).filter(item => item.values.some(value => value != null));
+
+      return {
+        months: availableMonths.map(month => ({
+          month,
+          revenue: revenueItems.some(item => item.values[availableMonths.indexOf(month)] != null)
+            ? parseWowNumber(revenueTotal[revenueMonthColumns[month]]) : null,
+          expenses: expenseItems.some(item => item.values[availableMonths.indexOf(month)] != null)
+            ? parseWowNumber(expenseTotal[expenseMonthColumns[month]]) : null,
+          profit: null,
+          units: totemCount ? parseWowNumber(totemCount[expenseMonthColumns[month]]) : null,
+          costPerTotem: costPerTotem ? parseWowNumber(costPerTotem[expenseMonthColumns[month]]) : null
+        })).map(row => ({
+          ...row,
+          profit: row.revenue != null && row.expenses != null ? row.revenue - row.expenses : null
+        })),
+        expenses: expenseItems,
+        revenueItems
+      };
+    }
+
+    function renderWowDashboard() {
+      const wow = WOW_DATA;
+      if (!wow) {
+        document.querySelector("#wowRevenueTable").innerHTML = "";
+        document.querySelector("#wowExpenseTable").innerHTML = "";
+        document.querySelector("#wowTotemTable").innerHTML = "";
+        return;
+      }
+
+      const selectedMonth = document.querySelector("#wowMonthFilter").value;
+      const selectedMonths = wow.months.filter(row => selectedMonth === "all" || row.month === Number(selectedMonth));
+      const totemMonths = selectedMonths.filter(row => row.units != null || row.costPerTotem != null);
+      const sumField = (rows, field) => rows.reduce((total, row) => total + (row[field] ?? 0), 0);
+      const comparableMonths = selectedMonths.filter(row => row.profit != null);
+      const totalRevenue = sumField(comparableMonths, "revenue");
+      const totalExpenses = sumField(comparableMonths, "expenses");
+      const totalProfit = totalRevenue - totalExpenses;
+      const margin = totalRevenue ? totalProfit / totalRevenue * 100 : null;
+      const periodFor = rows => {
+        if (!rows.length) return "Sem dados disponíveis";
+        if (selectedMonth !== "all") return FULL_MONTHS[Number(selectedMonth)];
+        const first = Math.min(...rows.map(row => row.month)), last = Math.max(...rows.map(row => row.month));
+        return first === last ? FULL_MONTHS[first] : `${FULL_MONTHS[first]} a ${FULL_MONTHS[last]}`;
+      };
+      document.querySelector("#wowRevenue").textContent = comparableMonths.length ? displayMoney(totalRevenue) : "—";
+      document.querySelector("#wowRevenueFoot").textContent = `${periodFor(comparableMonths)} · mesmo período`;
+      document.querySelector("#wowExpenses").textContent = comparableMonths.length ? displayMoney(totalExpenses) : "—";
+      document.querySelector("#wowExpensesFoot").textContent = `${periodFor(comparableMonths)} · mesmo período`;
+      document.querySelector("#wowProfit").textContent = comparableMonths.length ? displayMoney(totalProfit) : "—";
+      document.querySelector("#wowProfit").classList.toggle("positive", totalProfit >= 0 && comparableMonths.length > 0);
+      document.querySelector("#wowProfit").classList.toggle("negative", totalProfit < 0 && comparableMonths.length > 0);
+      document.querySelector("#wowProfitFoot").textContent = `${periodFor(comparableMonths)} · receita menos despesas`;
+      document.querySelector("#wowMargin").textContent = margin == null ? "—" : percent(margin);
+      document.querySelector("#wowMargin").classList.toggle("positive", margin != null && margin >= 0);
+      document.querySelector("#wowMargin").classList.toggle("negative", margin != null && margin < 0);
+      document.querySelector("#wowMarginFoot").textContent = `${periodFor(comparableMonths)} · lucro sobre receita`;
+      document.querySelector("#wowRevenueSubtitle").textContent = `${periodFor(comparableMonths)} · valores por categoria`;
+      document.querySelector("#wowBreakdownSubtitle").textContent = `${periodFor(comparableMonths)} · valores por categoria`;
+
+      renderWowCategoryTable(wow.revenueItems, comparableMonths, "revenue", "Não há meses com receitas e despesas para este filtro.");
+      renderWowCategoryTable(wow.expenses, comparableMonths, "expenses", "Não há meses com receitas e despesas para este filtro.");
+      renderWowTotemTable(totemMonths);
+    }
+
+    function renderWowCategoryTable(items, months, container, emptyMessage) {
+      const target = document.querySelector(container === "revenue" ? "#wowRevenueTable" : "#wowExpenseTable");
+      const monthIndexes = new Set(months.map(row => row.month));
+      const filteredItems = items.map(item => ({
+        name: item.name,
+        total: item.values.reduce((total, value, index) =>
+          total + (monthIndexes.has(WOW_DATA.months[index]?.month) ? value ?? 0 : 0), 0),
+        hasValue: item.values.some((value, index) => monthIndexes.has(WOW_DATA.months[index]?.month) && value != null)
+      })).filter(item => item.hasValue);
+      if (!filteredItems.length) {
+        target.innerHTML = `<div class="wow-message">${emptyMessage}</div>`;
+        return;
+      }
+      const total = filteredItems.reduce((sum, item) => sum + item.total, 0);
+      const body = filteredItems.map(item => `<tr><td>${escapeHtml(item.name)}</td><td>${displayMoney(item.total)}</td></tr>`).join("");
+      target.innerHTML = `<table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${body}</tbody><tfoot><tr class="wow-total-row"><td>Total</td><td>${displayMoney(total)}</td></tr></tfoot></table>`;
+    }
+
+    function renderWowTotemTable(rows) {
+      const target = document.querySelector("#wowTotemTable");
+      if (!rows.length) {
+        target.innerHTML = '<div class="wow-message">Não há dados de totens com G.O. para o mês selecionado.</div>';
+        return;
+      }
+      const body = rows.map(row =>
+        `<tr><td>${MONTHS[row.month]}</td><td>${row.units == null ? "—" : integer(row.units)}</td><td>${row.costPerTotem == null ? "—" : displayMoney(row.costPerTotem)}</td></tr>`
+      ).join("");
+      target.innerHTML = `<table><thead><tr><th>Mês</th><th>Totens com G.O.</th><th>Rateio por totem</th></tr></thead><tbody>${body}</tbody></table>`;
+    }
+
     async function refreshFromSheet() {
-      const button = document.querySelector("#refreshButton");
       const status = document.querySelector("#dataStatus");
-      button.disabled = true;
-      button.textContent = "Atualizando...";
       try {
         const response = await fetch(SHEET_CSV_URL, { cache: "no-store" });
         if (!response.ok) throw new Error(`A planilha respondeu com ${response.status}`);
@@ -695,6 +916,62 @@
       } catch (error) {
         status.textContent = "Sem conexão com a planilha · exibindo a última cópia incorporada.";
         console.warn("Não foi possível atualizar o painel pela planilha.", error);
+      }
+    }
+
+    async function refreshWowFromSheet() {
+      const status = document.querySelector("#wowDataStatus");
+      status.textContent = "Atualizando dados da planilha Wow Service...";
+      try {
+        const response = await fetch(WOW_SHEET_URL, { cache: "no-store" });
+        if (!response.ok) throw new Error(`A planilha Wow Service respondeu com ${response.status}`);
+        const freshData = parseWowSheetCsv(await response.text());
+        if (!freshData.months.length) throw new Error("A planilha Wow Service não retornou valores mensais");
+        WOW_DATA = freshData;
+        renderWowDashboard();
+        status.textContent = `Planilha atualizada às ${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })}. Receita disponível: ${periodForWow(freshData.months, "revenue")}.`;
+      } catch (error) {
+        status.textContent = "Não foi possível carregar a planilha Wow Service. Verifique a conexão e tente atualizar.";
+        console.warn("Não foi possível atualizar o painel Wow Service pela planilha.", error);
+      }
+    }
+
+    function periodForWow(rows, field) {
+      const available = rows.filter(row => row[field] != null);
+      if (!available.length) return "sem meses disponíveis";
+      const first = Math.min(...available.map(row => row.month)), last = Math.max(...available.map(row => row.month));
+      return first === last ? FULL_MONTHS[first] : `${FULL_MONTHS[first]} a ${FULL_MONTHS[last]}`;
+    }
+
+    let activeDashboard = "compare";
+    function switchDashboard(dashboard) {
+      activeDashboard = dashboard;
+      const compare = dashboard === "compare";
+      document.querySelector("#tab-compare").setAttribute("aria-selected", String(compare));
+      document.querySelector("#tab-compare").tabIndex = compare ? 0 : -1;
+      document.querySelector("#tab-wow").setAttribute("aria-selected", String(!compare));
+      document.querySelector("#tab-wow").tabIndex = compare ? -1 : 0;
+      document.querySelector("#panel-compare").hidden = !compare;
+      document.querySelector("#panel-wow").hidden = compare;
+      document.querySelector("#dashboardTitle").innerHTML = compare
+        ? `2025 <span style="color:var(--lime)">x</span> 2026` : "Wow Service";
+      document.querySelector("#dashboardCopy").textContent = compare
+        ? "Faturamento, locações e vendas em uma visão comparativa."
+        : "Receitas, despesas e resultado mensal da operação.";
+      document.querySelector("#sourceLink").href = compare
+        ? "https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/edit?gid=1301870631#gid=1301870631"
+        : WOW_SHEET_PAGE_URL;
+      document.querySelector("#sourceLink").textContent = compare
+        ? "Abrir planilha de origem ↗" : "Abrir planilha Wow Service ↗";
+      document.title = compare ? "Comparativo executivo | 2025 x 2026" : "Painel executivo | Wow Service";
+    }
+
+    async function refreshActiveDashboard() {
+      const button = document.querySelector("#refreshButton");
+      button.disabled = true;
+      button.textContent = "Atualizando...";
+      try {
+        await (activeDashboard === "compare" ? refreshFromSheet() : refreshWowFromSheet());
       } finally {
         button.disabled = false;
         button.textContent = "Atualizar dados";
@@ -721,9 +998,21 @@
       document.querySelector("#monthFilter").value = "all";
       render();
     });
-    document.querySelector("#refreshButton").addEventListener("click", refreshFromSheet);
+    document.querySelector("#wowMonthFilter").addEventListener("change", renderWowDashboard);
+    document.querySelector("#refreshButton").addEventListener("click", refreshActiveDashboard);
+    document.querySelector("#tab-compare").addEventListener("click", () => switchDashboard("compare"));
+    document.querySelector("#tab-wow").addEventListener("click", () => switchDashboard("wow"));
+    document.querySelector(".dashboard-tabs").addEventListener("keydown", event => {
+      if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
+      event.preventDefault();
+      const dashboard = event.key === "Home" || event.key === "ArrowLeft" ? "compare" : "wow";
+      switchDashboard(dashboard);
+      document.querySelector(`#tab-${dashboard}`).focus();
+    });
     render();
+    renderWowDashboard();
     refreshFromSheet();
+    refreshWowFromSheet();
   </script>
 </body>
 </html>
