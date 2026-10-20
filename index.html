@@ -143,6 +143,7 @@
     th { padding: 10px 10px; border-bottom: 1px solid #e4e8e1; color: #7a887f; font-size: 9px; font-weight: 700; letter-spacing: .7px; text-transform: uppercase; white-space: nowrap; }
     th:first-child, td:first-child { text-align: left; }
     td { padding: 9px 10px; border-bottom: 1px solid #edf0eb; color: #4f5d55; white-space: nowrap; }
+    .projected-table-cell { color: var(--projected); font-weight: 600; }
     tbody tr:hover { background: #f6f7f2; }
     tfoot td { border-top: 1px solid #dfe5dc; border-bottom: 0; color: var(--ink); font-weight: 700; }
     .status-note { display: flex; align-items: center; gap: 8px; margin: 13px 0 0; color: #7d8982; font-size: 10px; }
@@ -845,7 +846,9 @@
         const units25 = row25 ? getUnits(row25, type) : null;
         const units26 = row26 ? getUnits(row26, type) : null;
         const unitsDifference = years.length === 2 && units25 != null && units26 != null && units25 !== 0 ? percent((units26 / units25 - 1) * 100) : "—";
-        return `<tr><td>${MONTHS[index]}</td><td>${cellMoney(row25)}</td><td>${cellMoney(row26)}</td><td>${difference}</td><td>${cellUnits(row25)}</td><td>${cellUnits(row26)}</td><td>${unitsDifference}</td></tr>`;
+        const projectedClass = row26 && isProjected(row26) ? ' class="projected-table-cell" title="Valor projetado"' : "";
+        const projectedMonth = row26 && isProjected(row26) ? projectedClass : "";
+        return `<tr><td${projectedMonth}>${MONTHS[index]}</td><td>${cellMoney(row25)}</td><td${projectedClass}>${cellMoney(row26)}</td><td${projectedClass}>${difference}</td><td>${cellUnits(row25)}</td><td${projectedClass}>${cellUnits(row26)}</td><td${projectedClass}>${unitsDifference}</td></tr>`;
       }).join("");
       const totals = [2025, 2026].map(year => {
         const amounts = values[year].filter(Boolean).map(row => getValue(row, type)).filter(value => value != null);
