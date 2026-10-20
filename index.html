@@ -4,7 +4,7 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#153b32">
-  <title>Comparativo executivo | 2025 x 2026</title>
+  <title>COMPARATIVO FINANCEIRO</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
@@ -156,6 +156,59 @@
     .wow-table table { min-width: 360px; }
     .wow-message { min-height: 250px; padding: 28px; color: #829087; font-size: 13px; text-align: center; }
     .wow-total-row td { border-top: 1px solid #dfe5dc; color: var(--ink); font-weight: 700; }
+    .production-filters { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+    .production-filters .filter { min-width: 0; }
+    .production-filters select, .production-filters input { width: 100%; }
+    .production-filters input { min-height: 40px; border: 1px solid #d6ddd4; border-radius: 3px; padding: 0 12px; color: var(--ink); background: #fffefa; }
+    .production-filters input::placeholder { color: #87938b; }
+    .production-filters input:focus-visible { outline: 3px solid #9ccd50; outline-offset: 2px; }
+    .production-kpis { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; padding: 19px 0 24px; }
+    .production-kpi { min-width: 0; min-height: 112px; padding: 16px 17px 14px; border: 1px solid var(--line); border-radius: 18px; background: #0b3837; box-shadow: var(--shadow); }
+    .production-kpi-label { margin: 0 0 9px; color: #b7d8d1; font-size: 11px; }
+    .production-kpi-value { margin: 0; color: #4387ff; font-size: 22px; font-weight: 700; }
+    .production-kpi[data-transaction="Venda"] .production-kpi-value { color: #10b981; }
+    .production-kpi[data-transaction="Comodato"] .production-kpi-value { color: #f59e0b; }
+    .production-kpi[data-transaction="Interno"] .production-kpi-value { color: #8b5cf6; }
+    .production-kpi[data-transaction="Troca"] .production-kpi-value { color: #06b6d4; }
+    .production-kpi-foot { margin: 9px 0 0; color: #8fa9a4; font-size: 10px; }
+    .production-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr); gap: 14px; }
+    .production-chart-wrap { overflow: hidden; padding: 8px 14px 16px; }
+    .production-chart { display: block; width: 100%; height: auto; }
+    .production-table-scroll { max-height: 460px; overflow: auto; padding: 0 18px 14px; }
+    .production-table-scroll table { min-width: 850px; }
+    .production-orders-scroll { overflow-x: hidden; overflow-y: auto; }
+    .production-orders-scroll table { width: 100%; min-width: 0; table-layout: fixed; font-size: 10px; }
+    .production-orders-scroll th, .production-orders-scroll td { padding: 8px 4px; white-space: normal; overflow-wrap: anywhere; }
+    .production-orders-scroll th:nth-child(1) { width: 8%; }
+    .production-orders-scroll th:nth-child(2) { width: 10%; }
+    .production-orders-scroll th:nth-child(3) { width: 17%; }
+    .production-orders-scroll th:nth-child(4) { width: 8%; }
+    .production-orders-scroll th:nth-child(5) { width: 16%; }
+    .production-orders-scroll th:nth-child(6) { width: 6%; }
+    .production-orders-scroll th:nth-child(7), .production-orders-scroll th:nth-child(8) { width: 9%; }
+    .production-orders-scroll th:nth-child(9) { width: 10%; }
+    .production-orders-scroll th:nth-child(10) { width: 7%; }
+    .production-model-scroll { overflow-x: hidden; overflow-y: auto; }
+    .production-model-scroll table { width: 100%; min-width: 0; table-layout: fixed; }
+    .production-model-scroll th:first-child, .production-model-scroll td:first-child { width: 65%; white-space: normal; overflow-wrap: anywhere; }
+    .production-model-scroll th:not(:first-child), .production-model-scroll td:not(:first-child) { width: 17.5%; }
+    .production-detail { margin-top: 14px; overflow: hidden; }
+    .production-status-list { display: grid; gap: 10px; padding: 8px 18px 20px; }
+    .production-status-section + .production-status-section { border-top: 1px solid var(--line); }
+    .production-status-row { display: grid; grid-template-columns: minmax(120px, 1fr) auto; align-items: center; gap: 4px 12px; color: #53645b; font-size: 11px; }
+    .production-status-track { grid-column: 1 / -1; height: 7px; overflow: hidden; border-radius: 5px; background: #edf0eb; }
+    .production-status-fill { height: 100%; border-radius: inherit; background: var(--forest-2); }
+    .production-status-empty { padding: 20px 0; color: #829087; font-size: 12px; text-align: center; }
+    .production-client-chart-list { display: grid; gap: 10px; padding: 8px 20px 20px; }
+    .production-client-chart-row { display: grid; grid-template-columns: minmax(110px, 190px) minmax(0, 1fr) 60px 52px; align-items: center; gap: 10px; color: #53645b; font-size: 11px; }
+    .production-client-chart-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .production-client-chart-track { height: 16px; overflow: hidden; border-radius: 4px; background: #edf0eb; }
+    .production-client-chart-bar { height: 100%; min-width: 2px; border-radius: inherit; background: #25876b; }
+    .production-client-chart-value, .production-client-chart-share { text-align: right; font-variant-numeric: tabular-nums; }
+    @media (max-width: 640px) {
+      .production-client-chart-row { grid-template-columns: minmax(80px, 110px) minmax(0, 1fr) 48px 42px; gap: 6px; font-size: 10px; }
+      .production-client-chart-list { padding-right: 12px; padding-left: 12px; }
+    }
     footer { display: flex; justify-content: space-between; gap: 14px; padding: 17px 0 0; color: #88938c; font-size: 10px; }
     footer a { color: #496e5c; text-decoration: none; }
 
@@ -187,11 +240,21 @@
       .active-panel { margin-top: 10px; }
       .chart-wrap { padding-right: 5px; padding-left: 5px; }
       .mix-content { padding-bottom: 17px; }
+      .production-filters { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .production-filters .filter:last-child { grid-column: auto; }
+      .production-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; padding: 14px 0 17px; }
+      .production-kpi { min-height: 102px; padding: 13px 12px; }
+      .production-kpi-value { font-size: 19px; }
+      .production-grid .panel-head { flex-direction: column; }
       footer { flex-direction: column; }
       .dashboard-tabs { overflow-x: auto; }
       .dashboard-tab { flex: none; padding-right: 12px; padding-left: 12px; }
       .wow-grid { grid-template-columns: 1fr; gap: 10px; }
       .wow-grid .panel-head { flex-direction: column; }
+      .production-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .production-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      .production-grid { grid-template-columns: 1fr; gap: 10px; }
+      .production-detail { margin-top: 10px; }
     }
     @media (prefers-reduced-motion: no-preference) {
       .panel, .kpi { animation: arrive .45s both; }
@@ -220,9 +283,10 @@
   </header>
 
   <main>
-    <nav class="dashboard-tabs" role="tablist" aria-label="Comparativos">
-      <button class="dashboard-tab" id="tab-compare" type="button" role="tab" aria-selected="true" aria-controls="panel-compare">Comparativo 2025 x 2026</button>
-      <button class="dashboard-tab" id="tab-wow" type="button" role="tab" aria-selected="false" aria-controls="panel-wow" tabindex="-1">Wow Service</button>
+    <nav class="dashboard-tabs" role="tablist" aria-label="Painéis">
+      <button class="dashboard-tab" id="tab-compare" type="button" role="tab" aria-selected="true" aria-controls="panel-compare">COMPARATIVO FINANCEIRO</button>
+      <button class="dashboard-tab" id="tab-wow" type="button" role="tab" aria-selected="false" aria-controls="panel-wow" tabindex="-1">WOW SERVICE</button>
+      <button class="dashboard-tab" id="tab-production" type="button" role="tab" aria-selected="false" aria-controls="panel-production" tabindex="-1">PRODUÇÃO 2026</button>
     </nav>
 
     <section class="dashboard-panel" id="panel-compare" role="tabpanel" aria-labelledby="tab-compare">
@@ -329,6 +393,61 @@
     </footer>
     </section>
 
+    <section class="dashboard-panel" id="panel-production" role="tabpanel" aria-labelledby="tab-production" hidden>
+    <section class="filters production-filters" aria-label="Filtros da produção">
+      <div class="filter"><label for="productionOrderSearch">Número do pedido</label><input id="productionOrderSearch" type="search" inputmode="numeric" placeholder="Digite o número do pedido" autocomplete="off"></div>
+      <div class="filter"><label for="productionTransactionFilter">Transação</label><select id="productionTransactionFilter"><option value="all">Todas as transações</option></select></div>
+      <div class="filter"><label for="productionClientFilter">Clientes</label><select id="productionClientFilter"><option value="all">Todos os clientes</option></select></div>
+      <div class="filter"><label for="productionModelFilter">Modelo de totens</label><select id="productionModelFilter"><option value="all">Todos os modelos</option></select></div>
+      <div class="filter"><label for="productionEntryMonthFilter">Mês de entrada</label><select id="productionEntryMonthFilter"><option value="all">Todos os meses</option></select></div>
+      <div class="filter"><label for="productionShipmentMonthFilter">Mês de envio</label><select id="productionShipmentMonthFilter"><option value="all">Todos os meses</option></select></div>
+      <div class="filter"><label for="productionShipmentStatusFilter">Status de envio</label><select id="productionShipmentStatusFilter"><option value="all">Enviado e a enviar</option><option value="enviado">Enviado</option><option value="a enviar">A enviar</option></select></div>
+    </section>
+
+    <section class="production-kpis" aria-label="Totens por transação">
+      <article class="production-kpi" data-transaction="Locação"><p class="production-kpi-label">Locação</p><p class="production-kpi-value" id="productionRentUnits">0</p></article>
+      <article class="production-kpi" data-transaction="Venda"><p class="production-kpi-label">Venda</p><p class="production-kpi-value" id="productionSaleUnits">0</p><p class="production-kpi-foot" id="productionSaleValue">Valor vendido: R$ 0,00</p></article>
+      <article class="production-kpi" data-transaction="Comodato"><p class="production-kpi-label">Comodato</p><p class="production-kpi-value" id="productionLoanUnits">0</p></article>
+      <article class="production-kpi" data-transaction="Interno"><p class="production-kpi-label">Interno</p><p class="production-kpi-value" id="productionInternalUnits">0</p></article>
+      <article class="production-kpi" data-transaction="Troca"><p class="production-kpi-label">Troca</p><p class="production-kpi-value" id="productionExchangeUnits">0</p></article>
+    </section>
+
+    <section class="production-grid">
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Terminais enviados por mês</h2><p class="panel-subtitle">Soma dos totens agrupada pelo mês de envio realizado</p></div></div>
+        <div class="production-chart-wrap" id="productionShipmentChart"></div>
+      </article>
+      <article class="panel">
+        <section class="production-status-section">
+          <div class="panel-head"><div><h2 class="panel-title">Terminais por status de produção</h2></div></div>
+          <div class="production-status-list" id="productionStatusList"></div>
+        </section>
+        <section class="production-status-section">
+          <div class="panel-head"><div><h2 class="panel-title">Terminais por status na fábrica</h2></div></div>
+          <div class="production-status-list" id="productionFactoryStatusList"></div>
+        </section>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Totens por modelo</h2><p class="panel-subtitle">Soma da coluna AD (Quant) por modelo</p></div></div>
+        <div class="production-table-scroll production-model-scroll" id="productionModelTable"></div>
+      </article>
+      <article class="panel production-client-chart">
+        <div class="panel-head"><div><h2 class="panel-title">Quantidade de totens por cliente</h2><p class="panel-subtitle">Principais clientes no recorte filtrado</p></div></div>
+        <div class="production-client-chart-list" id="productionClientChart"></div>
+      </article>
+    </section>
+
+    <article class="panel production-detail">
+      <div class="panel-head"><div><h2 class="panel-title">Registros do recorte</h2><p class="panel-subtitle" id="productionRowsSubtitle">Terminais no recorte selecionado</p></div></div>
+      <div class="production-table-scroll production-orders-scroll" id="productionOrdersTable"></div>
+    </article>
+
+    <footer>
+      <span>Fonte: Planejados 2026</span>
+      <span id="productionDataStatus" aria-live="polite">Aguardando dados da planilha...</span>
+    </footer>
+    </section>
+
     <section class="dashboard-panel" id="panel-wow" role="tabpanel" aria-labelledby="tab-wow" hidden>
       <section class="filters wow-filters" aria-label="Filtros Wow Service">
         <div class="filter">
@@ -395,10 +514,13 @@
       "quarter-4": "4º trimestre"
     };
     const SHEET_CSV_URL = "https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/export?format=csv&gid=1301870631";
-    const WOW_SHEET_URL = "https://docs.google.com/spreadsheets/d/1RGu5x3CXuAHpUF5fzdOy-njK6GWsDPW2gzmhjp-4No4/gviz/tq?sheet=DRE%20WOW%20-%20AGRUPADO&tqx=out%3Acsv";
+    const WOW_SHEET_URL = "https://docs.google.com/spreadsheets/d/1RGu5x3CXuAHpUF5fzdOy-njK6GWsDPW2gzmhjp-4No4/export?format=csv&gid=803779247";
     const WOW_SHEET_PAGE_URL = "https://docs.google.com/spreadsheets/d/1RGu5x3CXuAHpUF5fzdOy-njK6GWsDPW2gzmhjp-4No4/edit?gid=803779247#gid=803779247";
+    const PRODUCTION_SHEET_URL = "https://docs.google.com/spreadsheets/d/16NQQowdDZ3SI-uV7ICA-bevMrgHT4u3Auwnr5eUcePg/export?format=csv&gid=435516244";
+    const PRODUCTION_SHEET_PAGE_URL = "https://docs.google.com/spreadsheets/d/16NQQowdDZ3SI-uV7ICA-bevMrgHT4u3Auwnr5eUcePg/edit?gid=435516244#gid=435516244";
     const FULL_MONTHS = ["janeiro", "fevereiro", "março", "abril", "maio", "junho", "julho", "agosto", "setembro", "outubro", "novembro", "dezembro"];
     let WOW_DATA = null;
+    let PRODUCTION_DATA = [];
     const OFFICIAL_TOTALS = {
       2025: [3849204.49, 4402864.13, 3720505.26, 4429361.40, 3806279.25, 5826539.68, 5153491.81, 5188276.75, 8174534.79, 8589392.98, 6888445.23, 4667767.45],
       2026: [6062336.45, 6171591.81, 5711897.20, 5807340.37, 5625403.20, 5262478.21, 6348955.95, 5750853.90, 5743901.38, 7130822.59]
@@ -849,8 +971,7 @@
       const expenseRows = rows.slice(1).filter(row => String(row[expensesColumn] ?? "").trim());
       const revenueRows = rows.slice(1).filter(row => String(row[revenueColumn] ?? "").trim());
       const expenseTotal = expenseRows.find(row => String(row[expensesColumn]).trim().toLocaleLowerCase("pt-BR") === "total");
-      const revenueTotal = revenueRows.find(row => String(row[revenueColumn]).trim().toLocaleLowerCase("pt-BR") === "total");
-      if (!expenseTotal || !revenueTotal) throw new Error("Totais mensais não encontrados na planilha Wow Service");
+      if (!expenseTotal) throw new Error("Total de despesas não encontrado na planilha Wow Service");
       const totemCount = expenseRows.find(row => String(row[expensesColumn]).toLocaleLowerCase("pt-BR").includes("quantidade de totens"));
       const costPerTotem = expenseRows.find(row => String(row[expensesColumn]).toLocaleLowerCase("pt-BR").includes("rateio"));
       const expenseItems = expenseRows.filter(row => {
@@ -860,28 +981,57 @@
         name: String(row[expensesColumn]).trim(),
         values: availableMonths.map(month => parseWowNumber(row[expenseMonthColumns[month]]))
       })).filter(item => item.values.some(value => value != null));
-      const revenueItems = revenueRows.filter(row => {
-        const label = String(row[revenueColumn]).trim().toLocaleLowerCase("pt-BR");
-        return label !== "total" && label !== "lucro";
-      }).map(row => ({
-        name: String(row[revenueColumn]).trim(),
-        values: availableMonths.map(month => parseWowNumber(row[revenueMonthColumns[month]]))
-      })).filter(item => item.values.some(value => value != null));
+      const getExpenseItem = name => {
+        const normalizedName = name.toLocaleLowerCase("pt-BR");
+        const item = expenseItems.find(expense => expense.name.toLocaleLowerCase("pt-BR").startsWith(normalizedName));
+        if (!item) throw new Error(`Categoria ausente na DRE WOW - AGRUPADO: ${name}`);
+        return item;
+      };
+      const taxItems = [getExpenseItem("Impostos sob serviços"), getExpenseItem("Impostos sob peças")];
+      const contributionCostItems = [
+        getExpenseItem("Custo com assistência"),
+        getExpenseItem("Frete"),
+        getExpenseItem("Custo com peças")
+      ];
+      const revenueCategoryNames = ["Atendimento avulso", "Garantia onsite", "Peças vendidas"];
+      const revenueItems = revenueCategoryNames.map(name => {
+        const sourceRow = revenueRows.find(row =>
+          String(row[revenueColumn] ?? "").trim().toLocaleLowerCase("pt-BR") === name.toLocaleLowerCase("pt-BR")
+        );
+        if (!sourceRow) throw new Error(`Categoria de receita ausente na DRE WOW - AGRUPADO: ${name}`);
+        return {
+          name,
+          values: availableMonths.map(month => parseWowNumber(sourceRow[revenueMonthColumns[month]]))
+        };
+      });
 
       return {
-        months: availableMonths.map(month => ({
-          month,
-          revenue: revenueItems.some(item => item.values[availableMonths.indexOf(month)] != null)
-            ? parseWowNumber(revenueTotal[revenueMonthColumns[month]]) : null,
-          expenses: expenseItems.some(item => item.values[availableMonths.indexOf(month)] != null)
-            ? parseWowNumber(expenseTotal[expenseMonthColumns[month]]) : null,
-          profit: null,
-          units: totemCount ? parseWowNumber(totemCount[expenseMonthColumns[month]]) : null,
-          costPerTotem: costPerTotem ? parseWowNumber(costPerTotem[expenseMonthColumns[month]]) : null
-        })).map(row => ({
-          ...row,
-          profit: row.revenue != null && row.expenses != null ? row.revenue - row.expenses : null
-        })),
+        months: availableMonths.map((month, monthIndex) => {
+          const hasRevenue = revenueItems.some(item => item.values[monthIndex] != null);
+          const revenue = hasRevenue
+            ? revenueItems.reduce((total, item) => total + (item.values[monthIndex] ?? 0), 0) : null;
+          const taxes = revenue != null && taxItems.every(item => item.values[monthIndex] != null)
+            ? taxItems.reduce((total, item) => total + item.values[monthIndex], 0) : null;
+          const netRevenue = taxes == null ? null : revenue - taxes;
+          const directCosts = netRevenue == null ? null :
+            contributionCostItems.reduce((total, item) => total + (item.values[monthIndex] ?? 0), 0);
+          const contributionMargin = netRevenue == null ? null : netRevenue - directCosts;
+          const expenses = expenseItems.some(item => item.values[monthIndex] != null)
+            ? parseWowNumber(expenseTotal[expenseMonthColumns[month]]) : null;
+          return {
+            month,
+            revenue,
+            expenses,
+            profit: revenue != null && expenses != null ? revenue - expenses : null,
+            taxes,
+            netRevenue,
+            directCosts,
+            contributionMargin,
+            contributionMarginPercent: netRevenue ? contributionMargin / netRevenue * 100 : null,
+            units: totemCount ? parseWowNumber(totemCount[expenseMonthColumns[month]]) : null,
+            costPerTotem: costPerTotem ? parseWowNumber(costPerTotem[expenseMonthColumns[month]]) : null
+          };
+        }),
         expenses: expenseItems,
         revenueItems
       };
@@ -944,6 +1094,7 @@
         target.innerHTML = `<div class="wow-message">${emptyMessage}</div>`;
         return;
       }
+      if (container === "expenses") filteredItems.sort((a, b) => b.total - a.total);
       const total = filteredItems.reduce((sum, item) => sum + item.total, 0);
       const body = filteredItems.map(item => `<tr><td>${escapeHtml(item.name)}</td><td>${displayMoney(item.total)}</td></tr>`).join("");
       target.innerHTML = `<table><thead><tr><th>Categoria</th><th>Valor</th></tr></thead><tbody>${body}</tbody><tfoot><tr class="wow-total-row"><td>Total</td><td>${displayMoney(total)}</td></tr></tfoot></table>`;
@@ -959,6 +1110,313 @@
         `<tr><td>${MONTHS[row.month]}</td><td>${row.units == null ? "—" : integer(row.units)}</td><td>${row.costPerTotem == null ? "—" : displayMoney(row.costPerTotem)}</td></tr>`
       ).join("");
       target.innerHTML = `<table><thead><tr><th>Mês</th><th>Totens com G.O.</th><th>Rateio por totem</th></tr></thead><tbody>${body}</tbody></table>`;
+    }
+
+    const normalizeProductionText = value => String(value ?? "").trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLocaleLowerCase("pt-BR");
+
+    function parseProductionNumber(value) {
+      const raw = String(value ?? "").trim().replace(/[^\d,.-]/g, "");
+      if (!raw) return null;
+      let normalized = raw;
+      if (raw.includes(",")) normalized = raw.replace(/\./g, "").replace(",", ".");
+      else if (/^-?\d{1,3}(\.\d{3})+$/.test(raw)) normalized = raw.replace(/\./g, "");
+      const parsed = Number(normalized);
+      return Number.isFinite(parsed) ? parsed : null;
+    }
+
+    function parseProductionDate(value) {
+      const raw = String(value ?? "").trim();
+      const localDate = raw.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+      const isoDate = raw.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/);
+      const parts = localDate
+        ? { day: Number(localDate[1]), month: Number(localDate[2]) - 1, year: Number(localDate[3]) }
+        : isoDate ? { year: Number(isoDate[1]), month: Number(isoDate[2]) - 1, day: Number(isoDate[3]) } : null;
+      if (!parts || parts.month < 0 || parts.month > 11 || parts.day < 1 || parts.day > 31) return null;
+      return { ...parts, sortValue: parts.year * 10000 + (parts.month + 1) * 100 + parts.day };
+    }
+
+    function parseProductionMonth(value, fallbackDate) {
+      const raw = String(value ?? "").trim();
+      const numeric = Number(raw);
+      if (Number.isInteger(numeric) && numeric >= 1 && numeric <= 12) return numeric - 1;
+      const monthName = MONTH_KEYS.indexOf(normalizeProductionText(raw).slice(0, 3));
+      return monthName >= 0 ? monthName : fallbackDate?.month ?? null;
+    }
+
+    function parseProductionCsv(csvText) {
+      const parsed = Papa.parse(csvText.replace(/^\uFEFF/, ""), { header: true, skipEmptyLines: "greedy" });
+      if (parsed.errors.some(error => error.type === "Quotes")) {
+        throw new Error("CSV de produção inválido");
+      }
+      const fields = new Set((parsed.meta.fields ?? []).map(normalizeProductionText));
+      for (const required of ["Entrada", "Transação", "Modelo", "Quant", "Ano Entrada", "Mês da entrada", "Previsão de Envio", "Categorização", "Status Fábrica", "STATUS"]) {
+        if (!fields.has(normalizeProductionText(required))) throw new Error(`Coluna ausente na planilha de produção: ${required}`);
+      }
+      return parsed.data.map(source => {
+        const values = new Map(Object.entries(source).map(([key, value]) => [normalizeProductionText(key), value]));
+        const field = name => String(values.get(normalizeProductionText(name)) ?? "").trim();
+        const entryDate = parseProductionDate(field("Entrada"));
+        const forecastDate = parseProductionDate(field("Previsão de Envio"));
+        const actualDate = parseProductionDate(field("Envio"));
+        const entryMonth = parseProductionMonth(field("Mês da entrada"), entryDate);
+        const forecastMonth = parseProductionMonth(field("Mês da previsão de envio"), forecastDate);
+        const actualMonth = parseProductionMonth(field("Mês do envio"), actualDate);
+        const actualStatus = normalizeProductionText(field("STATUS DE PRODUÇÃO"));
+        const sent = Boolean(actualDate || actualMonth != null || actualStatus === "enviado");
+        const shipmentStatus = normalizeProductionText(field("STATUS"));
+        const client = field("Nome Fantasia") || field("Cliente");
+        const generalStatus = field("STATUS");
+        const status = field("STATUS DE PRODUÇÃO") || generalStatus || (sent ? "Enviado" : "Sem status");
+        const factoryStatus = field("Status Fábrica") || "Sem status";
+        return {
+          entryDate,
+          entryYear: parseProductionNumber(field("Ano Entrada")) ?? entryDate?.year ?? null,
+          entryMonth,
+          transaction: field("Transação") || "Sem transação",
+          client,
+          clientCategory: field("Categorização") || "Sem categorização",
+          model: field("Modelo") || "Sem modelo",
+          quantity: parseProductionNumber(field("Quant")) ?? 0,
+          saleValue: parseProductionNumber(field("VALOR TOTAL TERMINAL QUANTIDADE")),
+          order: field("Pedido") || field("PEDIDO/OP") || field("OP") || "—",
+          forecastDate,
+          forecastMonth,
+          actualDate,
+          actualMonth,
+          shipmentMonth: sent ? actualMonth : forecastMonth,
+          shipmentStatus,
+          sent,
+          status,
+          factoryStatus,
+          delayDays: parseProductionNumber(field("Quant dias em atraso"))
+        };
+      }).filter(row => row.entryDate || row.entryYear != null || row.order !== "—");
+    }
+
+    const productionMonthOptions = MONTHS.map((name, index) => ({ value: String(index), label: name }));
+
+    function setProductionOptions(selectId, firstLabel, options, defaultValue = "all") {
+      const select = document.querySelector(`#${selectId}`);
+      const currentValue = select.value;
+      const availableValues = options.map(option => String(option.value));
+      select.innerHTML = `<option value="all">${escapeHtml(firstLabel)}</option>${options.map(option =>
+        `<option value="${escapeHtml(option.value)}">${escapeHtml(option.label)}</option>`
+      ).join("")}`;
+      select.value = availableValues.includes(currentValue) ? currentValue :
+        availableValues.includes(defaultValue) ? defaultValue : "all";
+    }
+
+    function renderProductionFilters() {
+      const transactions = [...new Set(PRODUCTION_DATA.map(row => row.transaction))]
+        .sort((first, second) => first.localeCompare(second, "pt-BR"))
+        .map(value => ({ value, label: value }));
+      const clients = [...new Set(PRODUCTION_DATA.map(row => row.clientCategory).filter(Boolean))]
+        .sort((first, second) => first.localeCompare(second, "pt-BR"))
+        .map(value => ({ value, label: value }));
+      const models = [...new Set(PRODUCTION_DATA.map(row => row.model).filter(Boolean))]
+        .sort((first, second) => first.localeCompare(second, "pt-BR"))
+        .map(value => ({ value, label: value }));
+      setProductionOptions("productionTransactionFilter", "Todas as transações", transactions);
+      setProductionOptions("productionClientFilter", "Todos os clientes", clients);
+      setProductionOptions("productionModelFilter", "Todos os modelos", models);
+      setProductionOptions("productionEntryMonthFilter", "Todos os meses", productionMonthOptions);
+      setProductionOptions("productionShipmentMonthFilter", "Todos os meses", productionMonthOptions);
+    }
+
+    function filteredProductionRows() {
+      const transaction = document.querySelector("#productionTransactionFilter").value;
+      const client = document.querySelector("#productionClientFilter").value;
+      const model = document.querySelector("#productionModelFilter").value;
+      const entryMonth = document.querySelector("#productionEntryMonthFilter").value;
+      const shipmentMonth = document.querySelector("#productionShipmentMonthFilter").value;
+      const shipmentStatus = document.querySelector("#productionShipmentStatusFilter").value;
+      const orderSearch = document.querySelector("#productionOrderSearch").value.replace(/\D/g, "");
+      return PRODUCTION_DATA.filter(row =>
+        (transaction === "all" || row.transaction === transaction) &&
+        (client === "all" || row.clientCategory === client) &&
+        (model === "all" || row.model === model) &&
+        (entryMonth === "all" || row.entryMonth === Number(entryMonth)) &&
+        (shipmentMonth === "all" || (row.sent && row.actualMonth === Number(shipmentMonth))) &&
+        (shipmentStatus === "all" || row.shipmentStatus === shipmentStatus) &&
+        (!orderSearch || row.order.replace(/\D/g, "").includes(orderSearch))
+      );
+    }
+
+    function renderProductionKpis(rows) {
+      const transactions = [
+        { name: "Locação", units: "#productionRentUnits" },
+        { name: "Venda", units: "#productionSaleUnits" },
+        { name: "Comodato", units: "#productionLoanUnits" },
+        { name: "Interno", units: "#productionInternalUnits" },
+        { name: "Troca", units: "#productionExchangeUnits" }
+      ];
+      for (const transaction of transactions) {
+        const matches = rows.filter(row => row.transaction === transaction.name);
+        const units = matches.reduce((total, row) => total + row.quantity, 0);
+        document.querySelector(transaction.units).textContent = integer(units);
+      }
+      const saleTotal = rows.filter(row => row.transaction === "Venda")
+        .reduce((total, row) => total + (row.saleValue ?? 0), 0);
+      document.querySelector("#productionSaleValue").textContent = `Valor vendido: ${displayMoney(saleTotal)}`;
+    }
+
+    function renderProductionShipmentChart(rows) {
+      const target = document.querySelector("#productionShipmentChart");
+      const actual = Array(12).fill(0);
+      for (const row of rows) {
+        if (row.sent && row.actualMonth != null) actual[row.actualMonth] += row.quantity;
+      }
+      const maximum = Math.max(...actual, 1);
+      const tickStep = Math.max(10, Math.ceil(maximum / 4 / 10) * 10);
+      const scaleMax = tickStep * 4;
+      const width = 1080, height = 350, left = 68, right = 20, top = 42, bottom = 48;
+      const plotWidth = width - left - right, plotHeight = height - top - bottom;
+      const groupWidth = plotWidth / 12, barWidth = Math.min(26, groupWidth * .31);
+      const grid = Array.from({ length: 5 }, (_, index) => {
+        const value = tickStep * index, y = top + plotHeight * (1 - index / 4);
+        return `<line class="grid-line" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"/><text class="axis-label" x="${left - 10}" y="${y + 5}" text-anchor="end" style="font-size:14px">${integer(value)}</text>`;
+      }).join("");
+      const bars = MONTHS.map((month, index) => {
+        const center = left + groupWidth * (index + .5);
+        const barHeight = actual[index] ? Math.max(1, plotHeight * actual[index] / scaleMax) : 0;
+        const x = center - barWidth / 2, y = top + plotHeight - barHeight;
+        const textY = Math.max(y - 10, 20);
+        const label = actual[index] ? `<text x="${center}" y="${textY}" text-anchor="middle" style="font: 700 18px 'DM Sans', sans-serif; fill: #1c2924;">${integer(actual[index])}</text>` : "";
+        const columns = `<g><title>${month} · Enviado: ${integer(actual[index])} terminais</title><rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="2" fill="#25876b"/>${label}</g>`;
+        return `${columns}<text class="month-label" x="${center}" y="${height - 14}" text-anchor="middle" style="font-size:14px">${month}</text>`;
+      }).join("");
+      const legend = `<div class="active-chart-legend"><span class="active-legend-item"><i class="active-legend-bar active-legend-2026"></i>Terminais enviados</span></div>`;
+      target.innerHTML = `${legend}<svg class="production-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="Terminais enviados por mês de envio">${grid}${bars}</svg>`;
+    }
+
+    function renderProductionStatus(rows) {
+      const statusGroups = new Map();
+      for (const row of rows) statusGroups.set(row.status, (statusGroups.get(row.status) ?? 0) + row.quantity);
+      const sorted = [...statusGroups].filter(([, count]) => count > 0)
+        .sort((first, second) => second[1] - first[1]);
+      const target = document.querySelector("#productionStatusList");
+      if (!sorted.length) {
+        target.innerHTML = '<div class="production-status-empty">Não há terminais neste recorte.</div>';
+        return;
+      }
+      const maximum = sorted[0][1];
+      target.innerHTML = sorted.map(([status, count]) =>
+        `<div class="production-status-row"><span>${escapeHtml(status)}</span><strong>${integer(count)}</strong><div class="production-status-track"><div class="production-status-fill" style="width:${count / maximum * 100}%"></div></div></div>`
+      ).join("");
+    }
+
+    function renderProductionFactoryStatus(rows) {
+      const statusGroups = new Map();
+      for (const row of rows) statusGroups.set(row.factoryStatus, (statusGroups.get(row.factoryStatus) ?? 0) + row.quantity);
+      const sorted = [...statusGroups].filter(([, count]) => count > 0)
+        .sort((first, second) => second[1] - first[1]);
+      const target = document.querySelector("#productionFactoryStatusList");
+      if (!sorted.length) {
+        target.innerHTML = '<div class="production-status-empty">Não há terminais neste recorte.</div>';
+        return;
+      }
+      const total = sorted.reduce((sum, [, count]) => sum + count, 0);
+      const percentage = value => `${new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(value / total * 100)}%`;
+      target.innerHTML = sorted.map(([status, count]) =>
+        `<div class="production-status-row"><span>${escapeHtml(status)}</span><strong>${integer(count)} · ${percentage(count)}</strong><div class="production-status-track"><div class="production-status-fill" style="width:${count / total * 100}%"></div></div></div>`
+      ).join("");
+    }
+
+    function renderProductionModelTable(rows) {
+      const models = new Map();
+      for (const row of rows) {
+        const summary = models.get(row.model) ?? { units: 0, sent: 0 };
+        summary.units += row.quantity;
+        if (row.sent) summary.sent += row.quantity;
+        models.set(row.model, summary);
+      }
+      const sorted = [...models].sort((first, second) => second[1].units - first[1].units || first[0].localeCompare(second[0], "pt-BR"));
+      if (!sorted.length) {
+        document.querySelector("#productionModelTable").innerHTML = '<div class="production-status-empty">Não há modelos neste recorte.</div>';
+        return;
+      }
+      const body = sorted.map(([model, summary]) =>
+        `<tr><td>${escapeHtml(model)}</td><td>${integer(summary.units)}</td><td>${integer(summary.sent)}</td></tr>`
+      ).join("");
+      document.querySelector("#productionModelTable").innerHTML = `<table><thead><tr><th>Modelo</th><th>Terminais</th><th>Enviados</th></tr></thead><tbody>${body}</tbody></table>`;
+    }
+
+    function renderProductionClientChart(rows) {
+      const clients = new Map();
+      for (const row of rows) {
+        clients.set(row.clientCategory, (clients.get(row.clientCategory) ?? 0) + row.quantity);
+      }
+      const ranked = [...clients]
+        .filter(([, quantity]) => quantity > 0)
+        .sort((first, second) => second[1] - first[1] || first[0].localeCompare(second[0], "pt-BR"));
+      const target = document.querySelector("#productionClientChart");
+      if (!ranked.length) {
+        target.innerHTML = '<div class="production-status-empty">Não há terminais neste recorte.</div>';
+        return;
+      }
+      const total = ranked.reduce((sum, [, quantity]) => sum + quantity, 0);
+      const maximum = ranked[0][1];
+      const percentage = value => `${new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 1 }).format(value / total * 100)}%`;
+      target.innerHTML = ranked.slice(0, 20).map(([client, quantity]) =>
+        `<div class="production-client-chart-row" title="${escapeHtml(client)}: ${integer(quantity)} terminais (${percentage(quantity)})"><span class="production-client-chart-name">${escapeHtml(client)}</span><div class="production-client-chart-track" role="img" aria-label="${escapeHtml(client)}: ${integer(quantity)} terminais, ${percentage(quantity)}"><div class="production-client-chart-bar" style="width:${quantity / maximum * 100}%"></div></div><strong class="production-client-chart-value">${integer(quantity)}</strong><span class="production-client-chart-share">${percentage(quantity)}</span></div>`
+      ).join("");
+    }
+
+    function productionDisplayDate(date) {
+      return date ? `${String(date.day).padStart(2, "0")}/${String(date.month + 1).padStart(2, "0")}/${date.year}` : "—";
+    }
+
+    function renderProductionOrdersTable(rows) {
+      const target = document.querySelector("#productionOrdersTable");
+      const sorted = [...rows].sort((first, second) =>
+        (first.forecastDate?.sortValue ?? Number.MAX_SAFE_INTEGER) -
+        (second.forecastDate?.sortValue ?? Number.MAX_SAFE_INTEGER)
+      );
+      document.querySelector("#productionRowsSubtitle").textContent =
+        `${integer(sorted.reduce((total, row) => total + row.quantity, 0))} terminais · valores da coluna AD (Quant)`;
+      if (!sorted.length) {
+        target.innerHTML = '<div class="production-status-empty">Não há pedidos neste recorte.</div>';
+        return;
+      }
+      const body = sorted.map(row =>
+        `<tr><td>${productionDisplayDate(row.entryDate)}</td><td>${escapeHtml(row.order)}</td><td>${escapeHtml(row.client || "—")}</td><td>${escapeHtml(row.transaction)}</td><td>${escapeHtml(row.model)}</td><td>${integer(row.quantity)}</td><td>${productionDisplayDate(row.forecastDate)}</td><td>${productionDisplayDate(row.actualDate)}</td><td>${escapeHtml(row.status)}</td><td>${row.delayDays == null ? "—" : integer(row.delayDays)}</td></tr>`
+      ).join("");
+      target.innerHTML = `<table><thead><tr><th>Entrada</th><th>Pedido / OP</th><th>Cliente</th><th>Transação</th><th>Modelo</th><th>Terminais</th><th>Envio previsto</th><th>Enviado em</th><th>Status</th><th>Dias de atraso</th></tr></thead><tbody>${body}</tbody></table>`;
+    }
+
+    function renderProduction() {
+      const rows = filteredProductionRows();
+      renderProductionKpis(rows);
+      renderProductionShipmentChart(rows);
+      renderProductionStatus(rows);
+      renderProductionFactoryStatus(rows);
+      renderProductionModelTable(rows);
+      renderProductionClientChart(rows);
+      renderProductionOrdersTable(rows);
+    }
+
+    async function refreshProductionFromSheet() {
+      const status = document.querySelector("#productionDataStatus");
+      status.textContent = "Atualizando dados da planilha de produção...";
+      const controller = new AbortController();
+      const timeout = setTimeout(() => controller.abort(), 30000);
+      try {
+        const response = await fetch(PRODUCTION_SHEET_URL, { cache: "no-store", signal: controller.signal });
+        if (!response.ok) throw new Error(`A planilha de produção respondeu com ${response.status}`);
+        const freshData = parseProductionCsv(await response.text());
+        if (!freshData.length) throw new Error("A planilha de produção não retornou pedidos");
+        PRODUCTION_DATA = freshData;
+        renderProductionFilters();
+        renderProduction();
+        status.textContent = `Planilha atualizada às ${new Date().toLocaleTimeString("pt-BR", { hour: "2-digit", minute: "2-digit" })} · ${integer(freshData.length)} registros carregados.`;
+      } catch (error) {
+        status.textContent = error.name === "AbortError"
+          ? "A atualização da produção excedeu 30 segundos. Verifique a conexão e tente novamente."
+          : `Não foi possível carregar os planejados: ${error.message}`;
+        console.warn("Não foi possível atualizar o painel de produção pela planilha.", error);
+      } finally {
+        clearTimeout(timeout);
+      }
     }
 
     async function refreshFromSheet() {
@@ -1005,24 +1463,42 @@
     let activeDashboard = "compare";
     function switchDashboard(dashboard) {
       activeDashboard = dashboard;
-      const compare = dashboard === "compare";
-      document.querySelector("#tab-compare").setAttribute("aria-selected", String(compare));
-      document.querySelector("#tab-compare").tabIndex = compare ? 0 : -1;
-      document.querySelector("#tab-wow").setAttribute("aria-selected", String(!compare));
-      document.querySelector("#tab-wow").tabIndex = compare ? -1 : 0;
-      document.querySelector("#panel-compare").hidden = !compare;
-      document.querySelector("#panel-wow").hidden = compare;
-      document.querySelector("#dashboardTitle").innerHTML = compare
-        ? `2025 <span style="color:var(--lime)">x</span> 2026` : "Wow Service";
-      document.querySelector("#dashboardCopy").textContent = compare
-        ? "Faturamento, locações e vendas em uma visão comparativa."
-        : "Receitas, despesas e resultado mensal da operação.";
-      document.querySelector("#sourceLink").href = compare
-        ? "https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOqO/edit?gid=1301870631#gid=1301870631"
-        : WOW_SHEET_PAGE_URL;
-      document.querySelector("#sourceLink").textContent = compare
-        ? "Abrir planilha de origem ↗" : "Abrir planilha Wow Service ↗";
-      document.title = compare ? "Comparativo executivo | 2025 x 2026" : "Painel executivo | Wow Service";
+      const dashboards = {
+        compare: {
+          title: `2025 <span style="color:var(--lime)">x</span> 2026`,
+          copy: "Faturamento, locações e vendas em uma visão comparativa.",
+          source: "https://docs.google.com/spreadsheets/d/1-wphD_EW-7LswSWLU0Or7iqLzaGhhOQ/edit?gid=1301870631#gid=1301870631",
+          sourceLabel: "Abrir planilha de origem ↗",
+          pageTitle: "COMPARATIVO FINANCEIRO"
+        },
+        wow: {
+          title: "Wow Service",
+          copy: "Receitas, despesas e resultado mensal da operação.",
+          source: WOW_SHEET_PAGE_URL,
+          sourceLabel: "Abrir planilha Wow Service ↗",
+          pageTitle: "Painel executivo | Wow Service"
+        },
+        production: {
+          title: "PRODUÇÃO 2026",
+          copy: "Pedidos, terminais e previsões de envio por transação, cliente e modelo.",
+          source: PRODUCTION_SHEET_PAGE_URL,
+          sourceLabel: "Abrir planejados 2026 ↗",
+          pageTitle: "PRODUÇÃO 2026"
+        }
+      };
+      const selectedDashboard = dashboards[dashboard];
+      if (!selectedDashboard) throw new Error(`Painel desconhecido: ${dashboard}`);
+      for (const name of Object.keys(dashboards)) {
+        const selected = name === dashboard;
+        document.querySelector(`#tab-${name}`).setAttribute("aria-selected", String(selected));
+        document.querySelector(`#tab-${name}`).tabIndex = selected ? 0 : -1;
+        document.querySelector(`#panel-${name}`).hidden = !selected;
+      }
+      document.querySelector("#dashboardTitle").innerHTML = selectedDashboard.title;
+      document.querySelector("#dashboardCopy").textContent = selectedDashboard.copy;
+      document.querySelector("#sourceLink").href = selectedDashboard.source;
+      document.querySelector("#sourceLink").textContent = selectedDashboard.sourceLabel;
+      document.title = selectedDashboard.pageTitle;
     }
 
     async function refreshActiveDashboard() {
@@ -1030,7 +1506,12 @@
       button.disabled = true;
       button.textContent = "Atualizando...";
       try {
-        await (activeDashboard === "compare" ? refreshFromSheet() : refreshWowFromSheet());
+        const refresh = {
+          compare: refreshFromSheet,
+          wow: refreshWowFromSheet,
+          production: refreshProductionFromSheet
+        }[activeDashboard];
+        await refresh();
       } finally {
         button.disabled = false;
         button.textContent = "Atualizar dados";
@@ -1058,18 +1539,31 @@
       render();
     });
     document.querySelector("#wowMonthFilter").addEventListener("change", renderWowDashboard);
+    for (const id of [
+      "productionTransactionFilter", "productionClientFilter",
+      "productionModelFilter", "productionEntryMonthFilter", "productionShipmentMonthFilter",
+      "productionShipmentStatusFilter"
+    ]) document.querySelector(`#${id}`).addEventListener("change", renderProduction);
+    document.querySelector("#productionOrderSearch").addEventListener("input", renderProduction);
     document.querySelector("#refreshButton").addEventListener("click", refreshActiveDashboard);
     document.querySelector("#tab-compare").addEventListener("click", () => switchDashboard("compare"));
     document.querySelector("#tab-wow").addEventListener("click", () => switchDashboard("wow"));
+    document.querySelector("#tab-production").addEventListener("click", () => switchDashboard("production"));
     document.querySelector(".dashboard-tabs").addEventListener("keydown", event => {
       if (!["ArrowLeft", "ArrowRight", "Home", "End"].includes(event.key)) return;
       event.preventDefault();
-      const dashboard = event.key === "Home" || event.key === "ArrowLeft" ? "compare" : "wow";
+      const dashboards = ["compare", "wow", "production"];
+      const currentIndex = dashboards.indexOf(activeDashboard);
+      const nextIndex = event.key === "Home" ? 0
+        : event.key === "End" ? dashboards.length - 1
+          : (currentIndex + (event.key === "ArrowRight" ? 1 : -1) + dashboards.length) % dashboards.length;
+      const dashboard = dashboards[nextIndex];
       switchDashboard(dashboard);
       document.querySelector(`#tab-${dashboard}`).focus();
     });
     render();
     renderWowDashboard();
+    refreshProductionFromSheet();
     refreshFromSheet();
     refreshWowFromSheet();
   </script>
