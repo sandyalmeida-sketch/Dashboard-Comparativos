@@ -347,7 +347,7 @@
     <section class="chart-grid" aria-label="Gráficos de faturamento">
       <article class="panel">
         <div class="panel-head">
-          <div><h2 class="panel-title">Faturamento mensal</h2><p class="panel-subtitle">Valores em R$ milhões · azul = projetado (out-dez/2026) · passe sobre uma coluna para ver o total exato</p></div>
+          <div><h2 class="panel-title">Faturamento mensal</h2><p class="panel-subtitle">Valores em R$ milhões · azul = projetado · passe sobre uma coluna para ver o total exato</p></div>
           <div class="totals" id="revenueTotals" aria-label="Totais por ano"></div>
         </div>
         <div class="chart-wrap" id="revenueChart"></div>
@@ -360,7 +360,7 @@
 
     <section class="panel volume-panel">
       <div class="panel-head">
-        <div><h2 class="panel-title">Totens movimentados por mês</h2><p class="panel-subtitle">Quantidade de locações e vendas · azul = projetado (out-dez/2026)</p></div>
+        <div><h2 class="panel-title">Totens movimentados por mês</h2><p class="panel-subtitle">Quantidade de locações e vendas · azul = projetado</p></div>
         <div class="totals" id="unitTotals" aria-label="Totais de unidades por ano"></div>
       </div>
       <div class="chart-wrap" id="unitChart"></div>
@@ -377,7 +377,7 @@
           <span class="active-legend-item"><i class="active-legend-bar active-legend-2026"></i>Recorrência 2026</span>
           <span class="active-legend-item"><i class="active-legend-line active-legend-2025"></i>Totens ativos 2025</span>
           <span class="active-legend-item"><i class="active-legend-line active-legend-2026"></i>Totens ativos 2026</span>
-          <span class="active-legend-item"><i class="active-legend-bar active-legend-projected"></i>Projetado (out-dez/2026)</span>
+          <span class="active-legend-item"><i class="active-legend-bar active-legend-projected"></i><span id="projectionLegendLabel">Projetado (out-dez/2026)</span></span>
         </div>
         <div class="active-chart-scroll" id="activeChart"></div>
       </div>
@@ -555,7 +555,21 @@
     }));
 
     const COLORS = { 2025: "#e8755f", 2026: "#25876b", rent: "#25876b", sale: "#e8755f", projected: "#4387bf" };
-    const isProjected = row => row.year === 2026 && row.month >= 9;
+    const isProjected = row => {
+      if (row.year !== 2026 || row.month < 9) return false;
+      const now = new Date();
+      if (now.getFullYear() < row.year) return true;
+      return now.getFullYear() === row.year && row.month >= now.getMonth();
+    };
+    const projectedPeriodLabel = () => {
+      const projectedMonths = MONTHS.map((_, month) => month).filter(month => isProjected({ year: 2026, month }));
+      if (!projectedMonths.length) return "sem projeção";
+      const first = projectedMonths[0], last = projectedMonths.at(-1);
+      const period = first === last
+        ? MONTHS[first].toLowerCase()
+        : `${MONTHS[first].toLowerCase()}-${MONTHS[last].toLowerCase()}`;
+      return `${period}/2026`;
+    };
     const chartColor = row => isProjected(row) ? COLORS.projected : COLORS[row.year];
     const money = value => new Intl.NumberFormat("pt-BR", { style: "currency", currency: "BRL" }).format(value);
     const integer = value => new Intl.NumberFormat("pt-BR", { maximumFractionDigits: 0 }).format(value);
@@ -678,7 +692,7 @@
           const labelClass = `${metric === "revenue" ? "bar-label revenue-label" : "bar-label"}${isProjected(row) ? " projected-label" : ""}`;
           return `<g><title>${tooltip}</title><rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="2" fill="${chartColor(row)}"/><text class="${labelClass}" x="${labelX}" y="${Math.max(13, y - 6)}" text-anchor="${labelAnchor}">${label}</text></g>`;
         }).join("");
-        const projectedMonth = years.includes(2026) && month >= 9;
+        const projectedMonth = years.includes(2026) && isProjected({ year: 2026, month });
         return `${rects}<text class="month-label${projectedMonth ? " projected-label" : ""}" x="${center}" y="${height - 15}" text-anchor="middle">${MONTHS[month]}</text>`;
       }).join("");
       return `<svg class="chart-svg" viewBox="0 0 ${width} ${height}" role="img" aria-label="${metric === "revenue" ? "Faturamento" : "Totens movimentados"} por mês">${grid}${bars}</svg>`;
@@ -1523,6 +1537,7 @@
 
     function render() {
       const years = availableYears(), month = currentMonth(), type = currentType();
+      document.querySelector("#projectionLegendLabel").textContent = `Projetado (${projectedPeriodLabel()})`;
       renderKpis(years, month, type);
       renderRevenue(years, month, type);
       renderMix(years, month, type);
@@ -1531,10 +1546,20 @@
       renderTable(years, month, type);
     }
 
+    function scheduleProjectionRefresh() {
+      const now = new Date();
+      const nextMonth = new Date(now.getFullYear(), now.getMonth() + 1, 1, 0, 0, 1);
+      setTimeout(() => {
+        render();
+        scheduleProjectionRefresh();
+      }, nextMonth.getTime() - now.getTime());
+    }
+
     document.querySelector("#yearFilter").addEventListener("change", render);
     document.querySelector("#monthFilter").addEventListener("change", () => {
       document.querySelector("#periodFilter").value = "all";
       render();
+      scheduleProjectionRefresh();
     });
     document.querySelector("#transactionFilter").addEventListener("change", render);
     document.querySelector("#periodFilter").addEventListener("change", () => {
