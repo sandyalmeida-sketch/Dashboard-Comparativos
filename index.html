@@ -563,16 +563,17 @@
     }));
 
     const COLORS = { 2025: "#e8755f", 2026: "#25876b", rent: "#25876b", sale: "#e8755f", projected: "#4387bf" };
-    const isProjected = row => {
-      if (row.year !== 2026 || row.month < 9) return false;
+    const isProjectedMonth = month => {
+      if (month < 9) return false;
       const now = new Date();
-      if (now.getFullYear() < row.year) return true;
-      return now.getFullYear() === row.year && row.month >= now.getMonth();
+      if (now.getFullYear() < 2026) return true;
+      return now.getFullYear() === 2026 && month >= now.getMonth();
     };
+    const isProjected = row => row.year === 2026 && isProjectedMonth(row.month);
     const currentRealization = () => document.querySelector("#realizationFilter").value;
     const matchesRealization = row => {
       const realization = currentRealization();
-      return realization === "all" || (realization === "projected" ? isProjected(row) : !isProjected(row));
+      return realization === "all" || (realization === "projected" ? isProjectedMonth(row.month) : !isProjectedMonth(row.month));
     };
     const projectedPeriodLabel = () => {
       const projectedMonths = MONTHS.map((_, month) => month).filter(month => isProjected({ year: 2026, month }));
@@ -590,12 +591,16 @@
     const getValue = (row, type) => type === "locacao" ? row.rent : type === "venda" ? row.sale : row.total;
     const getUnits = (row, type) => type === "locacao" ? row.rentUnits : type === "venda" ? row.saleUnits : row.rentUnits + row.saleUnits;
     const sum = rows => rows.reduce((total, row) => total + (row.value ?? 0), 0);
-    const latestAvailableValueMonth = (year, type) => {
-      const months = DATA.filter(row => row.year === year && matchesRealization(row) && getValue(row, type) != null).map(row => row.month);
-      return months.length ? Math.max(...months) : null;
+    const comparisonMonths = (month, type) => {
+      const months = selectedMonths(month, currentPeriod()).filter(index => matchesRealization({ year: 2026, month: index }));
+      if (availableYears().length !== 2) return months;
+      return months.filter(index => [2025, 2026].every(year => {
+        const row = DATA.find(item => item.year === year && item.month === index);
+        return row && getValue(row, type) != null;
+      }));
     };
     const getRows = (year, month, type) => {
-      const months = selectedMonths(month, currentPeriod());
+      const months = comparisonMonths(month, type);
       return DATA
         .filter(row => (year === "all" || row.year === Number(year)) && months.includes(row.month) && matchesRealization(row))
         .map(row => ({ ...row, value: getValue(row, type), units: getUnits(row, type) }));
@@ -624,14 +629,14 @@
 
     function renderKpis(years, month, type) {
       const period = currentPeriod();
-      const selectedMonthIndexes = selectedMonths(month, period);
+      const selectedMonthIndexes = comparisonMonths(month, type);
       const values = {};
       for (const year of [2025, 2026]) {
         const availableRows = getRows(year, month, type).filter(row => row.value != null);
         values[year] = availableRows.length ? sum(availableRows.map(row => ({ value: row.value }))) : null;
         document.querySelector(`#kpi${year}`).textContent = years.includes(year) && values[year] != null ? displayMoney(values[year]) : "—";
-        const latestMonth = latestAvailableValueMonth(year, type);
         const availableMonths = [...new Set(availableRows.map(row => row.month))].sort((first, second) => first - second);
+        const latestMonth = availableMonths.at(-1) ?? null;
         const selectedYearPeriod = availableMonths.length > 1
           ? `${MONTHS[availableMonths[0]]} a ${MONTHS[availableMonths.at(-1)]}`
           : availableMonths.length ? MONTHS[availableMonths[0]] : "Sem meses";
@@ -639,7 +644,8 @@
           ? MONTHS[Number(month)]
           : period !== "all" ? PERIOD_LABELS[period]
             : year === 2026 && currentRealization() !== "all" ? `${selectedYearPeriod} · ${currentRealization() === "projected" ? "projetado" : "realizado"}`
-            : year === 2026 ? latestMonth == null ? "Sem total oficial" : `Jan a ${MONTHS[latestMonth].toLowerCase()} · parcial` : "Jan a dez · completo";
+            : years.length === 2 && year === 2025 ? `${selectedYearPeriod} · comparável`
+              : year === 2026 ? latestMonth == null ? "Sem total oficial" : `Jan a ${MONTHS[latestMonth].toLowerCase()} · parcial` : "Jan a dez · completo";
       }
 
       const commonMonths = selectedMonthIndexes.filter(index => {
@@ -677,7 +683,7 @@
     }
 
     function svgBars(rows, years, metric) {
-      const labels = selectedMonths(currentMonth(), currentPeriod());
+      const labels = comparisonMonths(currentMonth(), currentType());
       const available = labels.flatMap(month => years.flatMap(year => rows.filter(row => row.year === year && row.month === month)));
       if (!available.length) return '<div class="empty-state">Não há valores disponíveis para este recorte.</div>';
 
@@ -727,7 +733,7 @@
     }
 
     function renderMix(years, month, type) {
-      const months = selectedMonths(month, currentPeriod());
+      const months = comparisonMonths(month, type);
       const rows = DATA.filter(row => years.includes(row.year) && months.includes(row.month) && matchesRealization(row));
       const annualTotals = years.map(year => {
         const yearRows = rows.filter(row => row.year === year);
@@ -793,7 +799,7 @@
     }
 
     function renderActiveTowers(years, month) {
-      const months = new Set(selectedMonths(month, currentPeriod()));
+      const months = new Set(comparisonMonths(month, currentType()));
       const rows = DATA
         .filter(row => years.includes(row.year) && months.has(row.month) && matchesRealization(row) && (row.active != null || row.rent != null))
         .sort((first, second) => first.year - second.year || first.month - second.month);
@@ -859,7 +865,7 @@
     }
 
     function renderTable(years, month, type) {
-      const months = selectedMonths(month, currentPeriod());
+      const months = comparisonMonths(month, type);
       const values = {};
       for (const year of [2025, 2026]) {
         values[year] = months.map(index => DATA.find(row => row.year === year && row.month === index && matchesRealization(row)));
