@@ -334,6 +334,14 @@
           </optgroup>
         </select>
       </div>
+      <div class="filter">
+        <label for="realizationFilter">Realização</label>
+        <select id="realizationFilter">
+          <option value="all">Todos</option>
+          <option value="realized">Realizado</option>
+          <option value="projected">Projetado</option>
+        </select>
+      </div>
       <p class="period-note" id="periodNote"></p>
     </section>
 
@@ -561,6 +569,11 @@
       if (now.getFullYear() < row.year) return true;
       return now.getFullYear() === row.year && row.month >= now.getMonth();
     };
+    const currentRealization = () => document.querySelector("#realizationFilter").value;
+    const matchesRealization = row => {
+      const realization = currentRealization();
+      return realization === "all" || (realization === "projected" ? isProjected(row) : !isProjected(row));
+    };
     const projectedPeriodLabel = () => {
       const projectedMonths = MONTHS.map((_, month) => month).filter(month => isProjected({ year: 2026, month }));
       if (!projectedMonths.length) return "sem projeção";
@@ -578,13 +591,13 @@
     const getUnits = (row, type) => type === "locacao" ? row.rentUnits : type === "venda" ? row.saleUnits : row.rentUnits + row.saleUnits;
     const sum = rows => rows.reduce((total, row) => total + (row.value ?? 0), 0);
     const latestAvailableValueMonth = (year, type) => {
-      const months = DATA.filter(row => row.year === year && getValue(row, type) != null).map(row => row.month);
+      const months = DATA.filter(row => row.year === year && matchesRealization(row) && getValue(row, type) != null).map(row => row.month);
       return months.length ? Math.max(...months) : null;
     };
     const getRows = (year, month, type) => {
       const months = selectedMonths(month, currentPeriod());
       return DATA
-        .filter(row => (year === "all" || row.year === Number(year)) && months.includes(row.month))
+        .filter(row => (year === "all" || row.year === Number(year)) && months.includes(row.month) && matchesRealization(row))
         .map(row => ({ ...row, value: getValue(row, type), units: getUnits(row, type) }));
     };
     const availableYears = () => {
@@ -618,15 +631,20 @@
         values[year] = availableRows.length ? sum(availableRows.map(row => ({ value: row.value }))) : null;
         document.querySelector(`#kpi${year}`).textContent = years.includes(year) && values[year] != null ? displayMoney(values[year]) : "—";
         const latestMonth = latestAvailableValueMonth(year, type);
+        const availableMonths = [...new Set(availableRows.map(row => row.month))].sort((first, second) => first - second);
+        const selectedYearPeriod = availableMonths.length > 1
+          ? `${MONTHS[availableMonths[0]]} a ${MONTHS[availableMonths.at(-1)]}`
+          : availableMonths.length ? MONTHS[availableMonths[0]] : "Sem meses";
         document.querySelector(`#foot${year}`).textContent = month !== "all"
           ? MONTHS[Number(month)]
           : period !== "all" ? PERIOD_LABELS[period]
+            : year === 2026 && currentRealization() !== "all" ? `${selectedYearPeriod} · ${currentRealization() === "projected" ? "projetado" : "realizado"}`
             : year === 2026 ? latestMonth == null ? "Sem total oficial" : `Jan a ${MONTHS[latestMonth].toLowerCase()} · parcial` : "Jan a dez · completo";
       }
 
       const commonMonths = selectedMonthIndexes.filter(index => {
-        const row25 = DATA.find(row => row.year === 2025 && row.month === index);
-        const row26 = DATA.find(row => row.year === 2026 && row.month === index);
+        const row25 = DATA.find(row => row.year === 2025 && row.month === index && matchesRealization(row));
+        const row26 = DATA.find(row => row.year === 2026 && row.month === index && matchesRealization(row));
         return row25 && row26 && getValue(row25, type) != null && getValue(row26, type) != null;
       });
       const comparable = commonMonths.length > 0;
@@ -641,7 +659,7 @@
       const commonPeriod = period !== "all" ? PERIOD_LABELS[period] : commonMonths.length > 1 ? `Jan a ${MONTHS[Math.max(...commonMonths)].toLowerCase()}` : commonMonths.length ? MONTHS[commonMonths[0]].toLowerCase() : "sem meses";
       document.querySelector("#footChange").textContent = month !== "all" ? `${MONTHS[Number(month)]} · mesmo mês` : `${commonPeriod} · mesmos meses`;
 
-      const periodRows = DATA.filter(row => selectedMonthIndexes.includes(row.month));
+      const periodRows = DATA.filter(row => selectedMonthIndexes.includes(row.month) && matchesRealization(row));
       document.querySelector("#kpiUnits").innerHTML = [2025, 2026].map(year => {
         const units = periodRows.filter(row => row.year === year).reduce((total, row) => total + getUnits(row, type), 0);
         const value = years.includes(year) ? integer(units) : "—";
@@ -710,7 +728,7 @@
 
     function renderMix(years, month, type) {
       const months = selectedMonths(month, currentPeriod());
-      const rows = DATA.filter(row => years.includes(row.year) && months.includes(row.month));
+      const rows = DATA.filter(row => years.includes(row.year) && months.includes(row.month) && matchesRealization(row));
       const annualTotals = years.map(year => {
         const yearRows = rows.filter(row => row.year === year);
         const valueForRow = row => type === "total" ? row.total : type === "locacao" ? row.rent : row.sale;
@@ -777,7 +795,7 @@
     function renderActiveTowers(years, month) {
       const months = new Set(selectedMonths(month, currentPeriod()));
       const rows = DATA
-        .filter(row => years.includes(row.year) && months.has(row.month) && (row.active != null || row.rent != null))
+        .filter(row => years.includes(row.year) && months.has(row.month) && matchesRealization(row) && (row.active != null || row.rent != null))
         .sort((first, second) => first.year - second.year || first.month - second.month);
       document.querySelector("#activeTotals").innerHTML = years.map(year => {
         const yearRows = rows.filter(row => row.year === year && row.active != null);
@@ -844,7 +862,7 @@
       const months = selectedMonths(month, currentPeriod());
       const values = {};
       for (const year of [2025, 2026]) {
-        values[year] = months.map(index => DATA.find(row => row.year === year && row.month === index));
+        values[year] = months.map(index => DATA.find(row => row.year === year && row.month === index && matchesRealization(row)));
       }
       const cellMoney = row => {
         if (!row || !years.includes(row.year)) return "—";
@@ -870,18 +888,19 @@
       });
       const units = [2025, 2026].map(year => values[year].filter(Boolean).reduce((total, row) => total + getUnits(row, type), 0));
       const monthsInBoth = months.filter(index => {
-        const row25 = DATA.find(row => row.year === 2025 && row.month === index);
-        const row26 = DATA.find(row => row.year === 2026 && row.month === index);
+        const row25 = DATA.find(row => row.year === 2025 && row.month === index && matchesRealization(row));
+        const row26 = DATA.find(row => row.year === 2026 && row.month === index && matchesRealization(row));
         return row25 && row26 && getValue(row25, type) != null && getValue(row26, type) != null;
       });
       const monthsWithUnitsInBoth = months.filter(index =>
-        DATA.some(row => row.year === 2025 && row.month === index) && DATA.some(row => row.year === 2026 && row.month === index)
+        DATA.some(row => row.year === 2025 && row.month === index && matchesRealization(row)) &&
+        DATA.some(row => row.year === 2026 && row.month === index && matchesRealization(row))
       );
       const comparable25 = sum(getRows(2025, "all", type).filter(row => monthsInBoth.includes(row.month) && row.value != null).map(row => ({ value: row.value })));
       const comparable26 = sum(getRows(2026, "all", type).filter(row => monthsInBoth.includes(row.month) && row.value != null).map(row => ({ value: row.value })));
       const difference = years.length === 2 && comparable25 ? percent((comparable26 / comparable25 - 1) * 100) : "—";
       const comparableUnits = [2025, 2026].map(year => monthsWithUnitsInBoth.reduce((total, index) => {
-        const row = DATA.find(item => item.year === year && item.month === index);
+        const row = DATA.find(item => item.year === year && item.month === index && matchesRealization(item));
         return total + getUnits(row, type);
       }, 0));
       const unitsDifference = years.length === 2 && comparableUnits[0] ? percent((comparableUnits[1] / comparableUnits[0] - 1) * 100) : "—";
@@ -1566,6 +1585,7 @@
       document.querySelector("#monthFilter").value = "all";
       render();
     });
+    document.querySelector("#realizationFilter").addEventListener("change", render);
     document.querySelector("#wowMonthFilter").addEventListener("change", renderWowDashboard);
     for (const id of [
       "productionTransactionFilter", "productionClientFilter",
