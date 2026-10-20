@@ -675,7 +675,10 @@
         ? `Total em ${MONTHS[Number(month)]}`
         : period === "all" ? "Total expedido no período" : `Total do ${PERIOD_LABELS[period]}`;
 
-      const latest2026Month = latestAvailableValueMonth(2026, type);
+      const available2026Months = DATA
+        .filter(row => row.year === 2026 && selectedMonthIndexes.includes(row.month) && matchesRealization(row) && getValue(row, type) != null)
+        .map(row => row.month);
+      const latest2026Month = available2026Months.length ? Math.max(...available2026Months) : null;
       const latest2026Note = latest2026Month == null ? " · sem valores oficiais" : ` · parcial até ${MONTHS[latest2026Month].toLowerCase()}`;
       document.querySelector("#periodNote").innerHTML = years.length === 2
         ? `Comparação equivalente: <strong>${period === "all" ? "meses disponíveis nos dois anos" : PERIOD_LABELS[period]}</strong>`
