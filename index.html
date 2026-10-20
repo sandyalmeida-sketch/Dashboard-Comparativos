@@ -173,8 +173,11 @@
     .production-kpi[data-transaction="Troca"] .production-kpi-value { color: #06b6d4; }
     .production-kpi-foot { margin: 9px 0 0; color: #8fa9a4; font-size: 10px; }
     .production-grid { display: grid; grid-template-columns: minmax(0, 1.45fr) minmax(320px, 1fr); gap: 14px; }
+    .production-revenue-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; margin-bottom: 14px; }
+    .production-revenue-total { color: var(--forest-2); font-size: 12px; font-weight: 700; font-variant-numeric: tabular-nums; }
     .production-chart-wrap { overflow: hidden; padding: 8px 14px 16px; }
     .production-chart { display: block; width: 100%; height: auto; }
+    .production-revenue-chart { display: block; width: 100%; height: auto; }
     .production-table-scroll { max-height: 460px; overflow: auto; padding: 0 18px 14px; }
     .production-table-scroll table { min-width: 850px; }
     .production-orders-scroll { overflow-x: hidden; overflow-y: auto; }
@@ -255,6 +258,7 @@
       .production-filters { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .production-kpis { grid-template-columns: repeat(3, minmax(0, 1fr)); }
       .production-grid { grid-template-columns: 1fr; gap: 10px; }
+      .production-revenue-grid { grid-template-columns: 1fr; gap: 10px; margin-bottom: 10px; }
       .production-detail { margin-top: 10px; }
     }
     @media (prefers-reduced-motion: no-preference) {
@@ -419,6 +423,17 @@
       <article class="production-kpi" data-transaction="Comodato"><p class="production-kpi-label">Comodato</p><p class="production-kpi-value" id="productionLoanUnits">0</p></article>
       <article class="production-kpi" data-transaction="Interno"><p class="production-kpi-label">Interno</p><p class="production-kpi-value" id="productionInternalUnits">0</p></article>
       <article class="production-kpi" data-transaction="Troca"><p class="production-kpi-label">Troca</p><p class="production-kpi-value" id="productionExchangeUnits">0</p></article>
+    </section>
+
+    <section class="production-revenue-grid" aria-label="Previsão e faturamento realizado">
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Previsão inicial de faturamento</h2><p class="panel-subtitle">Somente pedidos de Venda, pelo mês previsto de envio</p></div><strong class="production-revenue-total" id="productionForecastRevenueTotal">Total: R$ 0,00</strong></div>
+        <div class="production-chart-wrap" id="productionForecastRevenueChart"></div>
+      </article>
+      <article class="panel">
+        <div class="panel-head"><div><h2 class="panel-title">Faturamento realizado</h2><p class="panel-subtitle">Somente vendas enviadas, pelo mês de envio realizado</p></div><strong class="production-revenue-total" id="productionActualRevenueTotal">Total: R$ 0,00</strong></div>
+        <div class="production-chart-wrap" id="productionActualRevenueChart"></div>
+      </article>
     </section>
 
     <section class="production-grid">
@@ -1305,6 +1320,50 @@
       document.querySelector("#productionSaleValue").textContent = `Valor vendido: ${displayMoney(saleTotal)}`;
     }
 
+    function renderProductionRevenueChart(rows, monthField, sentOnly, chartId, totalId) {
+      const monthlyRevenue = Array(12).fill(0);
+      const sales = rows.filter(row =>
+        row.transaction === "Venda" &&
+        row.saleValue != null &&
+        row[monthField] != null &&
+        (!sentOnly || row.sent)
+      );
+      for (const row of sales) monthlyRevenue[row[monthField]] += row.saleValue;
+
+      const total = monthlyRevenue.reduce((sum, value) => sum + value, 0);
+      document.querySelector(`#${totalId}`).textContent = `Total: ${displayMoney(total)}`;
+      const target = document.querySelector(`#${chartId}`);
+      if (!sales.length) {
+        target.innerHTML = '<div class="production-status-empty">Não há vendas com valor e mês disponíveis neste recorte.</div>';
+        return;
+      }
+
+      const maximum = Math.max(...monthlyRevenue, 1);
+      const scaleMax = Math.ceil(maximum / 4 / 500000) * 500000;
+      const width = 720, height = 330, left = 64, right = 12, top = 44, bottom = 42;
+      const plotWidth = width - left - right, plotHeight = height - top - bottom;
+      const groupWidth = plotWidth / 12, barWidth = Math.min(26, groupWidth * .52);
+      const grid = Array.from({ length: 5 }, (_, index) => {
+        const value = scaleMax * index / 4;
+        const y = top + plotHeight * (1 - index / 4);
+        const label = value === 0 ? "0" : `${(value / 1000000).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} mi`;
+        return `<line class="grid-line" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"/><text class="axis-label" x="${left - 8}" y="${y + 4}" text-anchor="end" style="font-size:11px">${label}</text>`;
+      }).join("");
+      const bars = MONTHS.map((month, index) => {
+        const value = monthlyRevenue[index];
+        const center = left + groupWidth * (index + .5);
+        const barHeight = value > 0 ? Math.max(1, plotHeight * value / scaleMax) : 0;
+        const x = center - barWidth / 2, y = top + plotHeight - barHeight;
+        const label = value > 0
+          ? `<text x="${center}" y="${Math.max(y - 7, 13)}" text-anchor="middle" style="font: 700 10px 'DM Sans', sans-serif; fill: #1c2924;">${(value / 1000000).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} mi</text>`
+          : "";
+        const columns = `<g><title>${month} · ${displayMoney(value)} em vendas</title><rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="2" fill="${sentOnly ? "#25876b" : "#4387bf"}"/>${label}</g>`;
+        return `${columns}<text class="month-label" x="${center}" y="${height - 13}" text-anchor="middle" style="font-size:11px">${month}</text>`;
+      }).join("");
+      const description = sentOnly ? "Faturamento realizado por mês de envio" : "Previsão inicial de faturamento por mês previsto";
+      target.innerHTML = `<svg class="production-revenue-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${description}, somente transação Venda">${grid}${bars}</svg>`;
+    }
+
     function renderProductionShipmentChart(rows) {
       const target = document.querySelector("#productionShipmentChart");
       const actual = Array(12).fill(0);
@@ -1432,6 +1491,8 @@
     function renderProduction() {
       const rows = filteredProductionRows();
       renderProductionKpis(rows);
+      renderProductionRevenueChart(rows, "forecastMonth", false, "productionForecastRevenueChart", "productionForecastRevenueTotal");
+      renderProductionRevenueChart(rows, "actualMonth", true, "productionActualRevenueChart", "productionActualRevenueTotal");
       renderProductionShipmentChart(rows);
       renderProductionStatus(rows);
       renderProductionFactoryStatus(rows);
