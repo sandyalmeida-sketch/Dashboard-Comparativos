@@ -1217,6 +1217,7 @@
         const field = name => String(values.get(normalizeProductionText(name)) ?? "").trim();
         const entryDate = parseProductionDate(field("Entrada"));
         const forecastDate = parseProductionDate(field("Previsão de Envio"));
+        const billingForecastDate = parseProductionDate(field("Previsão pedido"));
         const actualDate = parseProductionDate(field("Envio"));
         const entryMonth = parseProductionMonth(field("Mês da entrada"), entryDate);
         const forecastMonth = parseProductionMonth(field("Mês da previsão de envio"), forecastDate);
@@ -1241,8 +1242,10 @@
           order: field("Pedido") || field("PEDIDO/OP") || field("OP") || "—",
           forecastDate,
           forecastMonth,
+          billingForecastMonth: billingForecastDate?.month ?? null,
           actualDate,
           actualMonth,
+          billingActualMonth: actualDate?.month ?? null,
           shipmentMonth: sent ? actualMonth : forecastMonth,
           shipmentStatus,
           sent,
@@ -1339,26 +1342,32 @@
       }
 
       const maximum = Math.max(...monthlyRevenue, 1);
-      const scaleMax = Math.ceil(maximum / 4 / 500000) * 500000;
-      const width = 720, height = 330, left = 64, right = 12, top = 44, bottom = 42;
+      const tickStep = Math.max(100000, Math.ceil(maximum / 4 / 100000) * 100000);
+      const scaleMax = tickStep * 4;
+      const width = 720, height = 350, left = 48, right = 145, top = 12, bottom = 34;
       const plotWidth = width - left - right, plotHeight = height - top - bottom;
-      const groupWidth = plotWidth / 12, barWidth = Math.min(26, groupWidth * .52);
+      const rowHeight = plotHeight / MONTHS.length, barHeight = Math.min(14, rowHeight * .62);
       const grid = Array.from({ length: 5 }, (_, index) => {
-        const value = scaleMax * index / 4;
-        const y = top + plotHeight * (1 - index / 4);
-        const label = value === 0 ? "0" : `${(value / 1000000).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} mi`;
-        return `<line class="grid-line" x1="${left}" y1="${y}" x2="${width - right}" y2="${y}"/><text class="axis-label" x="${left - 8}" y="${y + 4}" text-anchor="end" style="font-size:11px">${label}</text>`;
+        const value = tickStep * index;
+        const x = left + plotWidth * index / 4;
+        const label = value === 0 ? "0" : value >= 1000000
+          ? `${(value / 1000000).toLocaleString("pt-BR", { maximumFractionDigits: 1 })} mi`
+          : `${integer(value / 1000)} mil`;
+        return `<line class="grid-line" x1="${x}" y1="${top}" x2="${x}" y2="${top + plotHeight}"/><text class="axis-label" x="${x}" y="${height - 8}" text-anchor="middle" style="font-size:10px">${label}</text>`;
       }).join("");
       const bars = MONTHS.map((month, index) => {
         const value = monthlyRevenue[index];
-        const center = left + groupWidth * (index + .5);
-        const barHeight = value > 0 ? Math.max(1, plotHeight * value / scaleMax) : 0;
-        const x = center - barWidth / 2, y = top + plotHeight - barHeight;
-        const label = value > 0
-          ? `<text x="${center}" y="${Math.max(y - 7, 13)}" text-anchor="middle" style="font: 700 10px 'DM Sans', sans-serif; fill: #1c2924;">${(value / 1000000).toLocaleString("pt-BR", { minimumFractionDigits: 1, maximumFractionDigits: 1 })} mi</text>`
-          : "";
-        const columns = `<g><title>${month} · ${displayMoney(value)} em vendas</title><rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="2" fill="${sentOnly ? "#25876b" : "#4387bf"}"/>${label}</g>`;
-        return `${columns}<text class="month-label" x="${center}" y="${height - 13}" text-anchor="middle" style="font-size:11px">${month}</text>`;
+        const center = top + rowHeight * (index + .5);
+        const barWidth = plotWidth * value / scaleMax;
+        const x = left, y = center - barHeight / 2;
+        const label = new Intl.NumberFormat("pt-BR", {
+          style: "currency",
+          currency: "BRL",
+          minimumFractionDigits: 2,
+          maximumFractionDigits: 2
+        }).format(value);
+        const columns = `<g><title>${month} · ${displayMoney(value)} em vendas</title><rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="2" fill="${sentOnly ? "#25876b" : "#4387bf"}"/><text x="${left + barWidth + 7}" y="${center + 4}" text-anchor="start" style="font: 700 10px 'DM Sans', sans-serif; fill: #1c2924;">${label}</text></g>`;
+        return `${columns}<text class="month-label" x="${left - 8}" y="${center + 4}" text-anchor="end" style="font-size:11px">${month}</text>`;
       }).join("");
       const description = sentOnly ? "Faturamento realizado por mês de envio" : "Previsão inicial de faturamento por mês previsto";
       target.innerHTML = `<svg class="production-revenue-chart" viewBox="0 0 ${width} ${height}" role="img" aria-label="${description}, somente transação Venda">${grid}${bars}</svg>`;
@@ -1491,8 +1500,8 @@
     function renderProduction() {
       const rows = filteredProductionRows();
       renderProductionKpis(rows);
-      renderProductionRevenueChart(rows, "forecastMonth", false, "productionForecastRevenueChart", "productionForecastRevenueTotal");
-      renderProductionRevenueChart(rows, "actualMonth", true, "productionActualRevenueChart", "productionActualRevenueTotal");
+      renderProductionRevenueChart(rows, "billingForecastMonth", false, "productionForecastRevenueChart", "productionForecastRevenueTotal");
+      renderProductionRevenueChart(rows, "billingActualMonth", true, "productionActualRevenueChart", "productionActualRevenueTotal");
       renderProductionShipmentChart(rows);
       renderProductionStatus(rows);
       renderProductionFactoryStatus(rows);
