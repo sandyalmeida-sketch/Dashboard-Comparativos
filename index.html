@@ -1259,11 +1259,15 @@
         throw new Error("CSV de produção inválido");
       }
       const fields = new Set((parsed.meta.fields ?? []).map(normalizeProductionText));
-      for (const required of ["Entrada", "Transação", "Modelo", "Quant", "Ano Entrada", "Mês da entrada", "Previsão de Envio", "Categorização", "Status Fábrica", "STATUS"]) {
+      for (const required of ["Transação", "Modelo", "Quant", "Ano Entrada", "Mês da entrada", "Previsão de Envio", "Categorização", "Status Fábrica", "STATUS"]) {
         if (!fields.has(normalizeProductionText(required))) throw new Error(`Coluna ausente na planilha de produção: ${required}`);
       }
       return parsed.data.map(source => {
         const values = new Map(Object.entries(source).map(([key, value]) => [normalizeProductionText(key), value]));
+        const firstField = parsed.meta.fields?.[0];
+        if (!fields.has(normalizeProductionText("Entrada")) && firstField && parseProductionDate(source[firstField])) {
+          values.set(normalizeProductionText("Entrada"), source[firstField]);
+        }
         const field = name => String(values.get(normalizeProductionText(name)) ?? "").trim();
         const entryDate = parseProductionDate(field("Entrada"));
         const forecastDate = parseProductionDate(field("Previsão de Envio"));
